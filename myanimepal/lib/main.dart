@@ -31,7 +31,12 @@ class FirstPageState extends State<FirstPage>
     return Scaffold (
         appBar: AppBar
         (
-          title: Text("MyAnimePal"),
+         title: Text("MyAnimePal", style: TextStyle(color: Colors.black),),
+          backgroundColor: Colors.white,
+          actions: <Widget>
+          [
+            Image.network("https://firebasestorage.googleapis.com/v0/b/myanimepal.appspot.com/o/MyAnimePalLogo.png?alt=media&token=57926b6e-1808-43c8-9d99-e4b5572ef93e")
+          ],
         ),
         body: StreamBuilder
         (
@@ -93,14 +98,23 @@ class SingInState extends State<SingIn>
      return Scaffold (
         appBar: AppBar
         (
-          title: Text("Login to MyAnimePal"),
+          title: Text("Login to MyAnimePal", style: TextStyle(color: Colors.black),),
+          backgroundColor: Colors.white,
+          actions: <Widget>
+          [
+            Image.network("https://firebasestorage.googleapis.com/v0/b/myanimepal.appspot.com/o/MyAnimePalLogo.png?alt=media&token=57926b6e-1808-43c8-9d99-e4b5572ef93e")
+          ],
         ),
-        body: Form
+        body: Container
         (
+          color: Color.fromARGB(255, 0, 0, 20),
+          child: Form
+          (
           key: formKey,
           child: Column
         (
           mainAxisAlignment: MainAxisAlignment.center,
+          
           children: <Widget>
           [
             TextFormField
@@ -115,9 +129,12 @@ class SingInState extends State<SingIn>
               onSaved: (input) {
                 email = input; 
               },
-              decoration: InputDecoration( labelText: "Enter your e-mail", hintText: "example@gmail.com"),
-              style: TextStyle(fontSize: 20),
+              decoration: InputDecoration(filled: true, fillColor: Colors.white, labelText: "Enter your e-mail",
+              labelStyle: TextStyle(color: Colors.black)),
+              style: TextStyle(fontSize: 20, color: Colors.black),
             ),
+
+             SizedBox(height: MediaQuery.of(context).size.height / 30),
 
             TextFormField
             (
@@ -131,21 +148,35 @@ class SingInState extends State<SingIn>
               onSaved: (input) {
                 password = input; 
               },
-              decoration: InputDecoration( labelText: "Enter your password"),
-              style: TextStyle(fontSize: 20),
+              decoration: InputDecoration(filled: true, fillColor: Colors.white, labelText: "Enter your password",
+              labelStyle: TextStyle(color: Colors.black)),
+              style: TextStyle(fontSize: 20, color: Colors.black),
               obscureText: true
             ),
+
+             SizedBox(height: MediaQuery.of(context).size.height / 40),
 
             RaisedButton
             (
               onPressed: _signIn,
               child: Text("Sign in"),
+            ),
+
+            
+            RaisedButton
+            (
+              onPressed: _signUp,
+              child: Text("Sign up",),
             )
+
 
           ],
 
         )
         )
+
+        )
+        
      ); 
 
   }
@@ -167,5 +198,31 @@ class SingInState extends State<SingIn>
       }
     }
   }
+
+Future<void> _signUp() async
+  {
+    FormState state = formKey.currentState; 
+    if(state.validate())
+    {
+      state.save();
+      try
+      {
+         await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password:  password); 
+          showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text("USER CREATED SUCCESFULLY!"),
+            content: Text("Please, use the sign-in button to access the App."),
+          )
+      );
+
+      }
+      catch(e)
+      {
+
+      }
+    }
+  }
+
   
 }
