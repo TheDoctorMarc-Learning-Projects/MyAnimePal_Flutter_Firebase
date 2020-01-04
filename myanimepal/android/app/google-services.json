@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "458338933194",
+    "firebase_url": "https://myanimepal.firebaseio.com",
+    "project_id": "myanimepal",
+    "storage_bucket": "myanimepal.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:458338933194:android:d4bcbc9ce8985a548bd733",
+        "android_client_info": {
+          "package_name": "com.animepals.myanimepal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "458338933194-u6d1t41ee3tohou9d3inpahmf2ns967p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCt6TbifogWXaCL_OJuUCHm6W17NHva5Rk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "458338933194-u6d1t41ee3tohou9d3inpahmf2ns967p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
