@@ -29,11 +29,23 @@ class MyAnimePal extends StatelessWidget {
                 itemBuilder: (context, index)
                 {
                   Map<String, dynamic> data = snapshot.data.documents[index].data; 
-                  return ListTile
+                  return Column
                   (
-                    title: Text(data["Genre"], textScaleFactor:  1.3,),
-                    leading: Text("Mean Score: " + data["Mean Score"].toString(), textScaleFactor:  1.3,),
-                  ); 
+                    children: <Widget>
+                      [
+                        Image.network
+                        (
+                          data["ImagePath"]
+                        ),
+                        ListTile
+                        (
+                          title: Text(data["Genre"], textScaleFactor:  1.3,),
+                          leading: Text("Mean Score: " + data["Mean Score"].toString(), textScaleFactor:  1.3,),
+                        )
+                      ],
+                   
+                    ); 
+           
                 },
 
               ); 
