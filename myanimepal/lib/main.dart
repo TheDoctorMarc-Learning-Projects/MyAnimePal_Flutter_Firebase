@@ -18,7 +18,8 @@ class MyAnimePal extends StatelessWidget {
 
 class FirstPage extends StatefulWidget
 {
-   FirstPage(); 
+  FirebaseUser user; 
+  FirstPage({@required this.user}); 
 
   @override
   FirstPageState createState() => FirstPageState();
@@ -31,7 +32,7 @@ class FirstPageState extends State<FirstPage>
     return Scaffold (
         appBar: AppBar
         (
-         title: Text("MyAnimePal", style: TextStyle(color: Colors.black),),
+         title: Text("Viewing " + widget.user.displayName + " MyAnimePal's", style: TextStyle(color: Colors.black, fontSize: 15),),
           backgroundColor: Colors.white,
           actions: <Widget>
           [
@@ -90,7 +91,7 @@ class SingIn extends StatefulWidget
 class SingInState extends State<SingIn>
 {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>(); 
-  String email, password; 
+  String email, password, name; 
 
  @override
   Widget build(BuildContext context) 
@@ -154,6 +155,25 @@ class SingInState extends State<SingIn>
               obscureText: true
             ),
 
+             SizedBox(height: MediaQuery.of(context).size.height / 30),
+
+            TextFormField
+            (
+              validator: (input)
+              {
+                if(input.isEmpty)
+                {
+                  return "Please try again"; 
+                }
+              },
+              onSaved: (input) {
+                name = input; 
+              },
+              decoration: InputDecoration(filled: true, fillColor: Colors.white, labelText: "Enter your username",
+              labelStyle: TextStyle(color: Colors.black)),
+              style: TextStyle(fontSize: 20, color: Colors.black),
+            ),
+
              SizedBox(height: MediaQuery.of(context).size.height / 40),
 
             RaisedButton
@@ -189,8 +209,8 @@ class SingInState extends State<SingIn>
       state.save();
       try
       {
-         await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password:  password); 
-         Navigator.of(context).push(MaterialPageRoute(builder: (context) => FirstPage())); 
+         var result = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password:  password);
+         Navigator.of(context).push(MaterialPageRoute(builder: (context) => FirstPage(user: result.user))); 
       }
       catch(e)
       {
@@ -207,14 +227,13 @@ Future<void> _signUp() async
       state.save();
       try
       {
-         await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password:  password); 
-          showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text("USER CREATED SUCCESFULLY!"),
-            content: Text("Please, use the sign-in button to access the App."),
-          )
-      );
+         var result  = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password:  password); 
+         var info = UserUpdateInfo(); 
+         info.displayName = name; 
+         await result.user.updateProfile(info); 
+         await result.user.reload();
+         FirebaseUser newUser = await FirebaseAuth.instance.currentUser(); 
+         Navigator.of(context).push(MaterialPageRoute(builder: (context) => FirstPage(user: newUser))); 
 
       }
       catch(e)
