@@ -32,7 +32,7 @@ class FirstPageState extends State<FirstPage>
     return Scaffold (
         appBar: AppBar
         (
-         title: Text("Viewing " + widget.user.displayName + " MyAnimePal's", style: TextStyle(color: Colors.black, fontSize: 15),),
+         title: Text("Viewing " + widget.user.displayName + "'s MyAnimePal", style: TextStyle(color: Colors.black, fontSize: 15),),
           backgroundColor: Colors.white,
           actions: <Widget>
           [
@@ -86,7 +86,6 @@ class SingIn extends StatefulWidget
 @override
   SingInState createState() => SingInState();
 }
-
 
 class SingInState extends State<SingIn>
 {
@@ -233,6 +232,7 @@ Future<void> _signUp() async
          await result.user.updateProfile(info); 
          await result.user.reload();
          FirebaseUser newUser = await FirebaseAuth.instance.currentUser(); 
+         await _addUserToDatabase(newUser); 
          Navigator.of(context).push(MaterialPageRoute(builder: (context) => FirstPage(user: newUser))); 
 
       }
@@ -243,5 +243,12 @@ Future<void> _signUp() async
     }
   }
 
+
+_addUserToDatabase(FirebaseUser user) async 
+{
+  Firestore.instance.collection('users').document(user.displayName).collection('animes').document("empty").setData({"empty" : "empty"});
+  Firestore.instance.collection('users').document(user.displayName).collection('mangas').document("empty").setData({"empty" : "empty"});
+}
   
 }
+
