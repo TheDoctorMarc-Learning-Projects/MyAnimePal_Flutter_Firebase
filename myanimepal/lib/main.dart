@@ -2,15 +2,32 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:search_widget/search_widget.dart'; 
 
-void main() => runApp(MyAnimePal());
+ _loadAniMangaData() async
+ {
+  QuerySnapshot animesSnapshot = await Firestore.instance.collection("animes").getDocuments();
+  QuerySnapshot mangasSnapshot = await Firestore.instance.collection("mangas").getDocuments();
+  return animesSnapshot.documents + mangasSnapshot.documents; 
+ }
+
+void main() async
+{
+  var aniMangaData = await _loadAniMangaData(); 
+  runApp(MyAnimePal(aniMangaData: aniMangaData));
+} 
+ 
 
 class MyAnimePal extends StatelessWidget {
+
+  List<DocumentSnapshot> aniMangaData; 
+  MyAnimePal({this.aniMangaData}); 
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'My Anime Pal',
-      home: SingIn()
+      home: SingIn(aniMangaData: aniMangaData,)
      
     );
   }
@@ -19,7 +36,8 @@ class MyAnimePal extends StatelessWidget {
 class FirstPage extends StatefulWidget
 {
   FirebaseUser user; 
-  FirstPage({@required this.user}); 
+  List<DocumentSnapshot> aniMangaData;
+  FirstPage({@required this.user, @required this.aniMangaData}); // TODO: pass the user variable to the user list page
 
   @override
   FirstPageState createState() => FirstPageState();
@@ -39,7 +57,30 @@ class FirstPageState extends State<FirstPage>
             Image.network("https://firebasestorage.googleapis.com/v0/b/myanimepal.appspot.com/o/MyAnimePalLogo.png?alt=media&token=57926b6e-1808-43c8-9d99-e4b5572ef93e")
           ],
         ),
-        body: StreamBuilder
+        body: /*Column
+        (
+          children: <Widget>
+          [*/
+            SearchWidget<DocumentSnapshot>
+            (
+              dataList: widget.aniMangaData,
+              listContainerHeight: MediaQuery.of(context).size.height / 4,
+              queryBuilder: (query, list) {
+                return list
+                    .where((item) => item.documentID
+                        .toLowerCase()
+                        .contains(query.toLowerCase()))
+                    .toList();
+              },
+
+              popupListItemBuilder: (item) => PopupListItemWidget(item),
+
+              // TODO: go to the anime specific page when clicked
+
+            ),
+           /* Flexible
+            (
+              child: StreamBuilder
         (
           stream: Firestore.instance.collection("animes").snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot)
@@ -48,12 +89,14 @@ class FirstPageState extends State<FirstPage>
             {
               return Center(child: CircularProgressIndicator());
             }
-             return ListView.builder
+             return Flexible 
+             (
+               child: ListView.builder
               (
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, index)
                 {
-                  Map<String, dynamic> data = snapshot.data.documents[index].data; 
+                  Map<String, dynamic> data = widget.aniMangaData[index].data; 
                   return Column
                   (
                     children: <Widget>
@@ -73,16 +116,41 @@ class FirstPageState extends State<FirstPage>
            
                 },
 
-              ); 
+              ),
+             );
           },
         ),
+            )
+          ]
+        )*/
       ); 
   }
 
 }
 
+class PopupListItemWidget extends StatelessWidget {
+  const PopupListItemWidget(this.item);
+
+  final DocumentSnapshot item;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      child: Text(
+        item.documentID,
+        style: const TextStyle(fontSize: 16),
+      ),
+    );
+  }
+}
+
+
 class SingIn extends StatefulWidget
 {
+  List<DocumentSnapshot> aniMangaData;
+  SingIn ({this.aniMangaData}); 
+
 @override
   SingInState createState() => SingInState();
 }
@@ -210,7 +278,7 @@ class SingInState extends State<SingIn>
       try
       {
          var result = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password:  password);
-         Navigator.of(context).push(MaterialPageRoute(builder: (context) => FirstPage(user: result.user))); 
+         Navigator.of(context).push(MaterialPageRoute(builder: (context) => FirstPage(user: result.user, aniMangaData: widget.aniMangaData))); 
       }
       catch(e)
       {
@@ -233,7 +301,7 @@ Future<void> _signUp() async
          await result.user.updateProfile(info); 
          await result.user.reload();
          FirebaseUser newUser = await FirebaseAuth.instance.currentUser(); 
-         Navigator.of(context).push(MaterialPageRoute(builder: (context) => FirstPage(user: newUser))); 
+         Navigator.of(context).push(MaterialPageRoute(builder: (context) => FirstPage(user: newUser, aniMangaData: widget.aniMangaData))); 
 
       }
       catch(e)
