@@ -57,10 +57,10 @@ class FirstPageState extends State<FirstPage>
             Image.network("https://firebasestorage.googleapis.com/v0/b/myanimepal.appspot.com/o/MyAnimePalLogo.png?alt=media&token=57926b6e-1808-43c8-9d99-e4b5572ef93e")
           ],
         ),
-        body: /*Column
+        body: Column
         (
           children: <Widget>
-          [*/
+          [
             SearchWidget<DocumentSnapshot>
             (
               dataList: widget.aniMangaData,
@@ -73,14 +73,22 @@ class FirstPageState extends State<FirstPage>
                     .toList();
               },
 
-              popupListItemBuilder: (item) => PopupListItemWidget(item),
+              popupListItemBuilder: (item) {
+                return Container
+                (
+                  padding: const EdgeInsets.all(12),
+                  child: Text
+                  (
+                  item.documentID,
+                  style: const TextStyle(fontSize: 16),
+                  )
+                );
+              },
 
               // TODO: go to the anime specific page when clicked
 
             ),
-           /* Flexible
-            (
-              child: StreamBuilder
+          StreamBuilder
         (
           stream: Firestore.instance.collection("animes").snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot)
@@ -91,12 +99,14 @@ class FirstPageState extends State<FirstPage>
             }
              return Flexible 
              (
+                // TODO: this is just a test. display only X ammount of animes and mangas,
+                // separe them, add a button to see the  anime/ manga page
                child: ListView.builder
               (
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, index)
                 {
-                  Map<String, dynamic> data = widget.aniMangaData[index].data; 
+                  Map<String, dynamic> data = widget.aniMangaData[index].data;
                   return Column
                   (
                     children: <Widget>
@@ -120,31 +130,12 @@ class FirstPageState extends State<FirstPage>
              );
           },
         ),
-            )
           ]
-        )*/
+        )
       ); 
   }
 
 }
-
-class PopupListItemWidget extends StatelessWidget {
-  const PopupListItemWidget(this.item);
-
-  final DocumentSnapshot item;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      child: Text(
-        item.documentID,
-        style: const TextStyle(fontSize: 16),
-      ),
-    );
-  }
-}
-
 
 class SingIn extends StatefulWidget
 {
