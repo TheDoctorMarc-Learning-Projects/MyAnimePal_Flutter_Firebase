@@ -71,12 +71,7 @@ class FirstPageState extends State<FirstPage> {
               ));
         },
         selectedItemBuilder: (item, deleteSelectedItem) {
-          return Container(
-              padding: const EdgeInsets.all(12),
-              child: Text(
-                item.documentID,
-                style: const TextStyle(fontSize: 16),
-              ));
+          
         },
 
         // TODO: go to the anime specific page when clicked
