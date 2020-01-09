@@ -1,247 +1,41 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'LoginPage.dart';
 
-void main() => runApp(MyAnimePal());
+_loadAnimeData() async {
+  QuerySnapshot animesSnapshot =
+      await Firestore.instance.collection("animes").getDocuments();
+  return animesSnapshot.documents;
+}
+
+_loadMangaData() async {
+  QuerySnapshot mangasSnapshot =
+      await Firestore.instance.collection("mangas").getDocuments();
+  return mangasSnapshot.documents;
+}
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  var animeData = await _loadAnimeData();
+  var mangaData = await _loadMangaData();
+  runApp(MyAnimePal(animeData: animeData, mangaData: mangaData));
+}
 
 class MyAnimePal extends StatelessWidget {
+  List<DocumentSnapshot> animeData, mangaData;
+  MyAnimePal({@required this.animeData, @required this.mangaData}) {
+    // TODO: check the performance of this :) What about 1000+ animes and mangas ???
+    // Why not adding them to the database already ordered by genre?? XDD
+    animeData.sort((s1, s2) =>
+        s1.data["Genre"].toString().compareTo(s2.data["Genre"].toString()));
+    mangaData.sort((s1, s2) =>
+        s1.data["Genre"].toString().compareTo(s2.data["Genre"].toString()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'My Anime Pal',
-      home: SingIn()
-     
-    );
+        title: 'My Anime Pal',
+        home: SingIn(animeData: animeData, mangaData: mangaData));
   }
-}
-
-class FirstPage extends StatefulWidget
-{
-  FirebaseUser user; 
-  FirstPage({@required this.user}); 
-
-  @override
-  FirstPageState createState() => FirstPageState();
-}
-
-class FirstPageState extends State<FirstPage>
-{
- @override
-  Widget build(BuildContext context) {
-    return Scaffold (
-        appBar: AppBar
-        (
-         title: Text("Viewing " + widget.user.displayName + " MyAnimePal's", style: TextStyle(color: Colors.black, fontSize: 15),),
-          backgroundColor: Colors.white,
-          actions: <Widget>
-          [
-            Image.network("https://firebasestorage.googleapis.com/v0/b/myanimepal.appspot.com/o/MyAnimePalLogo.png?alt=media&token=57926b6e-1808-43c8-9d99-e4b5572ef93e")
-          ],
-        ),
-        body: StreamBuilder
-        (
-          stream: Firestore.instance.collection("animes").snapshots(),
-          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot)
-          {
-            if(!snapshot.hasData)
-            {
-              return Center(child: CircularProgressIndicator());
-            }
-             return ListView.builder
-              (
-                itemCount: snapshot.data.documents.length,
-                itemBuilder: (context, index)
-                {
-                  Map<String, dynamic> data = snapshot.data.documents[index].data; 
-                  return Column
-                  (
-                    children: <Widget>
-                      [
-                        Image.network
-                        (
-                          data["ImagePath"]
-                        ),
-                        ListTile
-                        (
-                          title: Text(data["Genre"], textScaleFactor:  1.3,),
-                          leading: Text("Mean Score: " + data["Mean Score"].toString(), textScaleFactor:  1.3,),
-                        )
-                      ],
-                   
-                    ); 
-           
-                },
-
-              ); 
-          },
-        ),
-      ); 
-  }
-
-}
-
-class SingIn extends StatefulWidget
-{
-@override
-  SingInState createState() => SingInState();
-}
-
-
-class SingInState extends State<SingIn>
-{
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>(); 
-  String email, password, name; 
-
- @override
-  Widget build(BuildContext context) 
-  {
-     return Scaffold (
-        appBar: AppBar
-        (
-          title: Text("Login to MyAnimePal", style: TextStyle(color: Colors.black),),
-          backgroundColor: Colors.white,
-          actions: <Widget>
-          [
-            Image.network("https://firebasestorage.googleapis.com/v0/b/myanimepal.appspot.com/o/MyAnimePalLogo.png?alt=media&token=57926b6e-1808-43c8-9d99-e4b5572ef93e")
-          ],
-        ),
-        body: Container
-        (
-          color: Color.fromARGB(255, 0, 0, 20),
-          child: Form
-          (
-          key: formKey,
-          child: Column
-        (
-          mainAxisAlignment: MainAxisAlignment.center,
-          
-          children: <Widget>
-          [
-            TextFormField
-            (
-              validator: (input)
-              {
-                if(input.isEmpty)
-                {
-                  return "Please try again"; 
-                }
-              },
-              onSaved: (input) {
-                email = input; 
-              },
-              decoration: InputDecoration(filled: true, fillColor: Colors.white, labelText: "Enter your e-mail",
-              labelStyle: TextStyle(color: Colors.black)),
-              style: TextStyle(fontSize: 20, color: Colors.black),
-            ),
-
-             SizedBox(height: MediaQuery.of(context).size.height / 30),
-
-            TextFormField
-            (
-              validator: (input)
-              {
-                if(input.isEmpty)
-                {
-                  return "Please try again"; 
-                }
-              },
-              onSaved: (input) {
-                password = input; 
-              },
-              decoration: InputDecoration(filled: true, fillColor: Colors.white, labelText: "Enter your password",
-              labelStyle: TextStyle(color: Colors.black)),
-              style: TextStyle(fontSize: 20, color: Colors.black),
-              obscureText: true
-            ),
-
-             SizedBox(height: MediaQuery.of(context).size.height / 30),
-
-            TextFormField
-            (
-              validator: (input)
-              {
-                if(input.isEmpty)
-                {
-                  return "Please try again"; 
-                }
-              },
-              onSaved: (input) {
-                name = input; 
-              },
-              decoration: InputDecoration(filled: true, fillColor: Colors.white, labelText: "Enter your username",
-              labelStyle: TextStyle(color: Colors.black)),
-              style: TextStyle(fontSize: 20, color: Colors.black),
-            ),
-
-             SizedBox(height: MediaQuery.of(context).size.height / 40),
-
-            RaisedButton
-            (
-              onPressed: _signIn,
-              child: Text("Sign in"),
-            ),
-
-            
-            RaisedButton
-            (
-              onPressed: _signUp,
-              child: Text("Sign up",),
-            )
-
-
-          ],
-
-        )
-        )
-
-        )
-        
-     ); 
-
-  }
-
-  Future<void> _signIn() async
-  {
-    FormState state = formKey.currentState; 
-    if(state.validate())
-    {
-      state.save();
-      try
-      {
-         var result = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password:  password);
-         Navigator.of(context).push(MaterialPageRoute(builder: (context) => FirstPage(user: result.user))); 
-      }
-      catch(e)
-      {
-
-      }
-    }
-  }
-
-Future<void> _signUp() async
-  {
-    FormState state = formKey.currentState; 
-    if(state.validate())
-    {
-      state.save();
-      try
-      {
-         var result  = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password:  password); 
-         var info = UserUpdateInfo(); 
-         info.displayName = name; 
-         await result.user.updateProfile(info); 
-         await result.user.reload();
-         FirebaseUser newUser = await FirebaseAuth.instance.currentUser(); 
-         Navigator.of(context).push(MaterialPageRoute(builder: (context) => FirstPage(user: newUser))); 
-
-      }
-      catch(e)
-      {
-
-      }
-    }
-  }
-
-  
 }
