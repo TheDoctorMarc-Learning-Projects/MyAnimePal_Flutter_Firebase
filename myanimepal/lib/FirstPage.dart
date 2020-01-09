@@ -41,6 +41,7 @@ class FirstPageState extends State<FirstPage>
         ),
         body: Column
         (
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>
           [
             searchBar(),
@@ -137,11 +138,19 @@ class FirstPageState extends State<FirstPage>
                   Map<String, dynamic> data = (list == "animes") ? widget.animeData[index].data : widget.mangaData[index].data;
                   return Column
                   (
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>
                       [
-                        Image.network
+                        Container
                         (
-                          data["ImagePath"]
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                          image: DecorationImage(
+                          fit: BoxFit.fill,
+                          image: NetworkImage(data["ImagePath"]),
+                          ),
+                          ),
                         ),
                         ListTile
                         (
