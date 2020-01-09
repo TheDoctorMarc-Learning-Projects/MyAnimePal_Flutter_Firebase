@@ -132,14 +132,26 @@ class FirstPageState extends State<FirstPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
                   SizedBox(height: 40),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: NetworkImage(data["ImagePath"]),
+                  Padding(
+                    padding:
+                        const EdgeInsets.only(left: 32, right: 32, bottom: 16),
+                    child: InkWell(
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            fit: BoxFit.fill,
+                            image: NetworkImage(data["ImagePath"]),
+                          ),
+                        ),
                       ),
+                      onDoubleTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => DescriptionPage(
+                                user: widget.user, aniManga: doc)));
+                        //Open the second page with this meal
+                      },
                     ),
                   ),
                   Center(
@@ -167,4 +179,5 @@ class FirstPageState extends State<FirstPage> {
       },
     );
   }
+
 }
