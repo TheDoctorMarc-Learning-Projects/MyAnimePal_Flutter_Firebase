@@ -15,6 +15,7 @@ import 'LoginPage.dart';
   return mangasSnapshot.documents; 
  }
 
+
 void main() async
 {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,7 +28,12 @@ void main() async
 class MyAnimePal extends StatelessWidget {
 
   List<DocumentSnapshot> animeData, mangaData; 
-  MyAnimePal({@required this.animeData, @required this.mangaData}); 
+  MyAnimePal({@required this.animeData, @required this.mangaData})
+  {
+    // TODO: check the performance of this :) What about 1000+ animes and mangas ??? 
+    animeData.sort((s1, s2) => s1.data["Genre"].toString().compareTo(s2.data["Genre"].toString()));
+    mangaData.sort((s1, s2) => s1.data["Genre"].toString().compareTo(s2.data["Genre"].toString()));
+  }
 
   @override
   Widget build(BuildContext context) {

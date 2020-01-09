@@ -30,7 +30,7 @@ class FirstPageState extends State<FirstPage>
             color: Colors.black,
           ),
           title: Text(
-            "Viewing " + widget.user.displayName + " MyAnimePal's",
+            "Viewing " + widget.user.displayName + "'s MyAnimePal", // TODO: Show this in the user list, not here
             style: TextStyle(color: Colors.black, fontSize: 15),
           ),
           backgroundColor: Colors.white,
@@ -99,10 +99,16 @@ class FirstPageState extends State<FirstPage>
 
   toggleAniMangaViewButton()
   {
-    return FloatingActionButton
-    (
+    return Container(
+        height: 70.0,
+        width: 70.0,
+        child: FittedBox
+        (
+          child: FloatingActionButton
+          (
+       splashColor: Colors.cyan,
        child: Text
-       ("Toggle View",
+       ("Anime/Manga",
         textAlign: TextAlign.center,
        ),
        onPressed: ()
@@ -111,6 +117,8 @@ class FirstPageState extends State<FirstPage>
            animes = !animes; 
          });
        },
+          )
+      )
     ); 
 
   }
@@ -135,12 +143,14 @@ class FirstPageState extends State<FirstPage>
                 itemCount: (list == "animes") ? widget.animeData.length : widget.mangaData.length,
                 itemBuilder: (context, index)
                 {
-                  Map<String, dynamic> data = (list == "animes") ? widget.animeData[index].data : widget.mangaData[index].data;
+                  DocumentSnapshot doc = (list == "animes") ? widget.animeData[index] : widget.mangaData[index];
+                  Map<String, dynamic> data = doc.data;
                   return Column
                   (
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>
                       [
+                        SizedBox(height: 40),
                         Container
                         (
                           width: MediaQuery.of(context).size.width,
@@ -152,11 +162,17 @@ class FirstPageState extends State<FirstPage>
                           ),
                           ),
                         ),
+                        Center
+                        (
+                         child: Text(doc.documentID, textScaleFactor:  2,),
+
+                        ),
                         ListTile
                         (
-                          title: Text(data["Genre"], textScaleFactor:  1.3,),
-                          leading: Text("Mean Score: " + data["Mean Score"].toString(), textScaleFactor:  1.3,),
+                          leading: Text("Genre: " + data["Genre"].toString(), textScaleFactor:  1.3, textAlign: TextAlign.center,),
+                          trailing: Text("Mean Score: " + data["Mean Score"].toString(), textScaleFactor:  1.3,),
                         )
+               
                       ],
                    
                     ); 
