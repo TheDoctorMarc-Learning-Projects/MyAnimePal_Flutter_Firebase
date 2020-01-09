@@ -3,30 +3,36 @@ import 'package:flutter/material.dart';
 import 'LoginPage.dart'; 
 
 
- _loadAniMangaData() async
+ _loadAnimeData() async
  {
-  QuerySnapshot animesSnapshot = await Firestore.instance.collection("animes").getDocuments();
-  QuerySnapshot mangasSnapshot = await Firestore.instance.collection("mangas").getDocuments();
-  return animesSnapshot.documents + mangasSnapshot.documents; 
+  QuerySnapshot animesSnapshot = await Firestore.instance.collection("animes").getDocuments(); 
+  return animesSnapshot.documents; 
+ }
+
+  _loadMangaData() async
+ {
+  QuerySnapshot mangasSnapshot = await Firestore.instance.collection("mangas").getDocuments(); 
+  return mangasSnapshot.documents; 
  }
 
 void main() async
 {
-  var aniMangaData = await _loadAniMangaData(); 
-  runApp(MyAnimePal(aniMangaData: aniMangaData));
+  var animeData = await _loadAnimeData(); 
+  var mangaData = await _loadMangaData(); 
+  runApp(MyAnimePal(animeData: animeData, mangaData: mangaData));
 } 
  
 
 class MyAnimePal extends StatelessWidget {
 
-  List<DocumentSnapshot> aniMangaData; 
-  MyAnimePal({this.aniMangaData}); 
+  List<DocumentSnapshot> animeData, mangaData; 
+  MyAnimePal({@required this.animeData, @required this.mangaData}); 
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'My Anime Pal',
-      home: SingIn(aniMangaData: aniMangaData,)
+      home: SingIn(animeData: animeData, mangaData: mangaData)
      
     );
   }

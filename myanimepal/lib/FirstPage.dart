@@ -7,8 +7,11 @@ import 'DescriptionPage.dart';
 class FirstPage extends StatefulWidget
 {
   FirebaseUser user; 
-  List<DocumentSnapshot> aniMangaData;
-  FirstPage({@required this.user, @required this.aniMangaData}); // TODO: pass the user variable to the user list page
+  List<DocumentSnapshot> animeData, mangaData, aniMangaData;
+  FirstPage({@required this.user, @required this.animeData, @required this.mangaData})
+  {
+    aniMangaData = animeData + mangaData; 
+  }  
 
   @override
   FirstPageState createState() => FirstPageState();
@@ -17,6 +20,7 @@ class FirstPage extends StatefulWidget
 class FirstPageState extends State<FirstPage>
 {
   DocumentSnapshot selectedItem; 
+  bool animes = true; 
 
  @override
   Widget build(BuildContext context) {
@@ -34,7 +38,20 @@ class FirstPageState extends State<FirstPage>
         (
           children: <Widget>
           [
-            SearchWidget<DocumentSnapshot>
+            searchBar(),
+            SizedBox(height: 10),
+            toggleAniMangaViewButton(),
+            SizedBox(height: 10),
+            (animes) ? animangaList("animes") : animangaList("mangas"),
+          ]
+        )
+      ); 
+  }
+
+  searchBar()
+  {
+    return 
+    SearchWidget<DocumentSnapshot>
             (
               dataList: widget.aniMangaData,
               listContainerHeight: MediaQuery.of(context).size.height / 4,
@@ -76,10 +93,33 @@ class FirstPageState extends State<FirstPage>
              Navigator.of(context).push(MaterialPageRoute(builder: (context) => DescriptionPage(user: widget.user, aniManga: item))); 
               });
               }
-            ),
-          StreamBuilder
+            ); 
+
+  }
+
+  toggleAniMangaViewButton()
+  {
+    return FloatingActionButton
+    (
+       child: Text
+       ("Toggle View",
+        textAlign: TextAlign.center,
+       ),
+       onPressed: ()
+       {
+         setState(() {
+           animes = !animes; 
+         });
+       },
+    ); 
+
+  }
+
+  animangaList(String list)
+  {
+    return  StreamBuilder
         (
-          stream: Firestore.instance.collection("animes").snapshots(),
+          stream: Firestore.instance.collection(list).snapshots(),
           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot)
           {
             if(!snapshot.hasData)
@@ -92,10 +132,10 @@ class FirstPageState extends State<FirstPage>
                 // separe them, add a button to see the  anime/ manga page
                child: ListView.builder
               (
-                itemCount: snapshot.data.documents.length +1,
+                itemCount: (list == "animes") ? widget.animeData.length : widget.mangaData.length,
                 itemBuilder: (context, index)
                 {
-                  Map<String, dynamic> data = widget.aniMangaData[index].data;
+                  Map<String, dynamic> data = (list == "animes") ? widget.animeData[index].data : widget.mangaData[index].data;
                   return Column
                   (
                     children: <Widget>
@@ -118,10 +158,8 @@ class FirstPageState extends State<FirstPage>
               ),
              );
           },
-        ),
-          ]
-        )
-      ); 
+        ); 
+
   }
 
 }

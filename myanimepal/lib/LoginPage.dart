@@ -5,8 +5,8 @@ import 'FirstPage.dart';
 
 class SingIn extends StatefulWidget
 {
-  List<DocumentSnapshot> aniMangaData;
-  SingIn ({this.aniMangaData}); 
+  List<DocumentSnapshot> animeData, mangaData; 
+  SingIn({@required this.animeData, @required this.mangaData}); 
 
 @override
   SingInState createState() => SingInState();
@@ -135,7 +135,7 @@ class SingInState extends State<SingIn>
       try
       {
          var result = await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password:  password);
-         Navigator.of(context).push(MaterialPageRoute(builder: (context) => FirstPage(user: result.user, aniMangaData: widget.aniMangaData))); 
+         Navigator.of(context).push(MaterialPageRoute(builder: (context) => FirstPage(user: result.user, animeData: widget.animeData, mangaData: widget.mangaData))); 
       }
       catch(e)
       {
@@ -159,7 +159,7 @@ Future<void> _signUp() async
          await result.user.reload();
          FirebaseUser newUser = await FirebaseAuth.instance.currentUser(); 
          await _addUserToDatabase(newUser); 
-         Navigator.of(context).push(MaterialPageRoute(builder: (context) => FirstPage(user: newUser, aniMangaData: widget.aniMangaData))); 
+         Navigator.of(context).push(MaterialPageRoute(builder: (context) => FirstPage(user: result.user, animeData: widget.animeData, mangaData: widget.mangaData))); 
 
       }
       catch(e)
