@@ -17,6 +17,7 @@ import 'LoginPage.dart';
 
 void main() async
 {
+  WidgetsFlutterBinding.ensureInitialized();
   var animeData = await _loadAnimeData(); 
   var mangaData = await _loadMangaData(); 
   runApp(MyAnimePal(animeData: animeData, mangaData: mangaData));

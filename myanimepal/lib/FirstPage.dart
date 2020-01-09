@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:search_widget/search_widget.dart'; 
+import 'package:search_widget/search_widget.dart';
 import 'DescriptionPage.dart';
 
 class FirstPage extends StatefulWidget
@@ -22,16 +22,21 @@ class FirstPageState extends State<FirstPage>
   DocumentSnapshot selectedItem; 
   bool animes = true; 
 
- @override
+  @override
   Widget build(BuildContext context) {
-    return Scaffold (
-        appBar: AppBar
-        (
-         title: Text("Viewing " + widget.user.displayName + " MyAnimePal's", style: TextStyle(color: Colors.black, fontSize: 15),),
+    return Scaffold(
+        appBar: AppBar(
+          iconTheme: IconThemeData(
+            color: Colors.black,
+          ),
+          title: Text(
+            "Viewing " + widget.user.displayName + " MyAnimePal's",
+            style: TextStyle(color: Colors.black, fontSize: 15),
+          ),
           backgroundColor: Colors.white,
-          actions: <Widget>
-          [
-            Image.network("https://firebasestorage.googleapis.com/v0/b/myanimepal.appspot.com/o/MyAnimePalLogo.png?alt=media&token=57926b6e-1808-43c8-9d99-e4b5572ef93e")
+          actions: <Widget>[
+            Image.network(
+                "https://firebasestorage.googleapis.com/v0/b/myanimepal.appspot.com/o/MyAnimePalLogo.png?alt=media&token=57926b6e-1808-43c8-9d99-e4b5572ef93e")
           ],
         ),
         body: Column
@@ -62,39 +67,33 @@ class FirstPageState extends State<FirstPage>
                         .contains(query.toLowerCase()))
                     .toList();
               },
-
               popupListItemBuilder: (item) {
-                return Container
-                (
-                  padding: const EdgeInsets.all(12),
-                  child: Text
-                  (
-                  item.documentID,
-                  style: const TextStyle(fontSize: 16),
-                  )
-                );
+                return Container(
+                    padding: const EdgeInsets.all(12),
+                    child: Text(
+                      item.documentID,
+                      style: const TextStyle(fontSize: 16),
+                    ));
               },
-
-               selectedItemBuilder: (item, deleteSelectedItem) {
-                return Container
-                (
-                  padding: const EdgeInsets.all(12),
-                  child: Text
-                  (
-                  item.documentID,
-                  style: const TextStyle(fontSize: 16),
-                  )
-                );
+              selectedItemBuilder: (item, deleteSelectedItem) {
+                return Container(
+                    padding: const EdgeInsets.all(12),
+                    child: Text(
+                      item.documentID,
+                      style: const TextStyle(fontSize: 16),
+                    ));
               },
 
               // TODO: go to the anime specific page when clicked
-              onItemSelected: (item) { setState(() {
-                selectedItem = item; 
-             Navigator.of(context).push(MaterialPageRoute(builder: (context) => DescriptionPage(user: widget.user, aniManga: item))); 
-              });
-              }
-            ); 
-
+              onItemSelected: (item) {
+                setState(() {
+                  selectedItem = item;
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) =>
+                          DescriptionPage(user: widget.user, aniManga: item)));
+                });
+              }); 
+    
   }
 
   toggleAniMangaViewButton()
@@ -161,5 +160,4 @@ class FirstPageState extends State<FirstPage>
         ); 
 
   }
-
 }
