@@ -158,6 +158,7 @@ Future<void> _signUp() async
          await result.user.updateProfile(info); 
          await result.user.reload();
          FirebaseUser newUser = await FirebaseAuth.instance.currentUser(); 
+         await _addUserToDatabase(newUser); 
          Navigator.of(context).push(MaterialPageRoute(builder: (context) => FirstPage(user: newUser, aniMangaData: widget.aniMangaData))); 
 
       }
@@ -168,5 +169,11 @@ Future<void> _signUp() async
     }
   }
 
+
+_addUserToDatabase(FirebaseUser user) async 
+{
+  Firestore.instance.collection('users').document(user.displayName).collection('animes').document("empty").setData({"empty" : "empty"});
+  Firestore.instance.collection('users').document(user.displayName).collection('mangas').document("empty").setData({"empty" : "empty"});
+}
   
 }

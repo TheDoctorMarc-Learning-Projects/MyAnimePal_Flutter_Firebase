@@ -92,7 +92,7 @@ class FirstPageState extends State<FirstPage>
                 // separe them, add a button to see the  anime/ manga page
                child: ListView.builder
               (
-                itemCount: snapshot.data.documents.length,
+                itemCount: snapshot.data.documents.length +1,
                 itemBuilder: (context, index)
                 {
                   Map<String, dynamic> data = widget.aniMangaData[index].data;
