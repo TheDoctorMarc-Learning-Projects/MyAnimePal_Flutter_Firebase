@@ -1,16 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'statuses.dart';
 
-class DescriptionPage extends StatefulWidget {
+class DescriptionPage extends StatefulWidget { // TODO: If the animanga is not in the user's list, button to add it
   FirebaseUser user;
   DocumentSnapshot aniManga;
-  bool isAnime; 
-  DescriptionPage({@required this.user, @required this.aniManga})
-  {
-    String path = aniManga.reference.path.toString(); 
-    String discriminator = path.substring(0, path.indexOf("/")); 
-    isAnime = (discriminator == 'animes'); 
+  bool isAnime;
+  DescriptionPage({@required this.user, @required this.aniManga}) {
+    String path = aniManga.reference.path.toString();
+    String discriminator = path.substring(0, path.indexOf("/"));
+    isAnime = (discriminator == 'animes');
   }
 
   @override
@@ -18,6 +18,7 @@ class DescriptionPage extends StatefulWidget {
 }
 
 class DescriptionPageState extends State<DescriptionPage> {
+  String status = "Test";// TODO: Get anime/manga status from firebase (the user can have it, or not)
 
   @override
   Widget build(BuildContext context) {
@@ -61,24 +62,48 @@ class DescriptionPageState extends State<DescriptionPage> {
           Row(
             children: <Widget>[
               Container(
-                width: MediaQuery.of(context).size.width * 0.15,
+                width: MediaQuery.of(context).size.width * 0.25,
                 child: TextField(
                   decoration: InputDecoration(
-                      labelText:
-                          "Ep/Cpt's completed"), // TODO: update this in firebase
+                      hintText: "Total: " +
+                          ((widget.isAnime)
+                              ? widget.aniManga.data["Episodes"].toString()
+                              : widget.aniManga.data["Chapters"].toString()),
+                      labelText: (widget.isAnime)
+                          ? 'Watched'
+                          : 'Readed'), // TODO: update this in firebase
                   keyboardType: TextInputType.number,
                 ),
               ),
+            /*  Container(
+                width: MediaQuery.of(context).size.width * 0.2,
+                child: */DropdownButton(
+                  hint: Text(status),
+                  value: null,
+                  items: ((widget.isAnime) ? animeStatuses : mangaStatuses)
+                      .map((String item) {
+                    return DropdownMenuItem
+                    (
+                      value: item,
+                      child: Text(item),
+                    );
+                  }).toList(),
+
+                  onChanged: (String value)
+                  {
+                    setState(() {
+                      status = value; 
+                      // TODO: update in firebase
+                    });
+                  },
+                ),
+            /*  ),*/
               Container(
-                width: MediaQuery.of(context).size.width * 0.15,
-                //child: // TODO: Dropdown with possible anime statuses
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width * 0.15,
+                width: MediaQuery.of(context).size.width * 0.2,
                 child: TextField(
                   decoration: InputDecoration(
-                      labelText:
-                          "Score"), // TODO: update this in firebase
+                      hintText: "1-10",
+                      labelText: "Score"), // TODO: update this in firebase
                   keyboardType: TextInputType.number,
                 ),
               )
