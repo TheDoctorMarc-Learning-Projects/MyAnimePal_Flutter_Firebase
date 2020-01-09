@@ -43,60 +43,69 @@ class SingInState extends State<SingIn>
           
           children: <Widget>
           [
-            TextFormField
-            (
-              validator: (input)
-              {
-                if(input.isEmpty)
+            Padding(
+              padding: const EdgeInsets.only(left:16, right:16),
+              child: TextFormField
+              (
+                validator: (input)
                 {
-                  return "Please try again"; 
-                }
-              },
-              onSaved: (input) {
-                email = input; 
-              },
-              decoration: InputDecoration(filled: true, fillColor: Colors.white, labelText: "Enter your e-mail",
-              labelStyle: TextStyle(color: Colors.black)),
-              style: TextStyle(fontSize: 20, color: Colors.black),
+                  if(input.isEmpty)
+                  {
+                    return "Please try again"; 
+                  }
+                },
+                onSaved: (input) {
+                  email = input; 
+                },
+                decoration: InputDecoration(filled: true, fillColor: Colors.white, labelText: "Enter your e-mail",
+                labelStyle: TextStyle(color: Colors.black)),
+                style: TextStyle(fontSize: 20, color: Colors.black),
+              ),
             ),
 
              SizedBox(height: MediaQuery.of(context).size.height / 30),
 
-            TextFormField
-            (
-              validator: (input)
-              {
-                if(input.isEmpty)
+            Padding(
+              padding: const EdgeInsets.only(left:16, right:16),
+              child: TextFormField
+              (
+                validator: (input)
                 {
-                  return "Please try again"; 
-                }
-              },
-              onSaved: (input) {
-                password = input; 
-              },
-              decoration: InputDecoration(filled: true, fillColor: Colors.white, labelText: "Enter your password",
-              labelStyle: TextStyle(color: Colors.black)),
-              style: TextStyle(fontSize: 20, color: Colors.black),
-              obscureText: true
+                  if(input.isEmpty)
+                  {
+                    return "Please try again"; 
+                  }
+                },
+                onSaved: (input) {
+                  password = input; 
+                },
+                decoration: InputDecoration(filled: true, fillColor: Colors.white, labelText: "Enter your password",
+                labelStyle: TextStyle(color: Colors.black)),
+                style: TextStyle(fontSize: 20, color: Colors.black),
+                obscureText: true
+              ),
             ),
 
              SizedBox(height: MediaQuery.of(context).size.height / 30),
 
-            TextFormField
-            (
-              validator: (input)
-              {
-                if(input.isEmpty)
+            Padding(
+              padding: const EdgeInsets.only(left:16, right:16),
+              child: TextFormField
+              (
+                validator: (input)
                 {
-                  return "Please try again"; 
-                }
-              },
-              onSaved: (input) {
-                name = input; 
-              },
-              decoration: InputDecoration(filled: true, fillColor: Colors.white, labelText: "Enter your username",
-              labelStyle: TextStyle(color: Colors.black)),
-              style: TextStyle(fontSize: 20, color: Colors.black),
+                  if(input.isEmpty)
+                  {
+                    return "Please try again"; 
+                  }
+                },
+                onSaved: (input) {
+                  name = input; 
+                },
+                decoration: InputDecoration(filled: true, fillColor: Colors.white, labelText: "Enter your username",
+                labelStyle: TextStyle(color: Colors.black)),
+                style: TextStyle(fontSize: 20, color: Colors.black),
+              ),
             ),
 
              SizedBox(height: MediaQuery.of(context).size.height / 40),
