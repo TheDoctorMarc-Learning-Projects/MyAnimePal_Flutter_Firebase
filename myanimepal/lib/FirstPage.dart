@@ -72,9 +72,7 @@ class FirstPageState extends State<FirstPage> {
                 style: const TextStyle(fontSize: 16),
               ));
         },
-        selectedItemBuilder: (item, deleteSelectedItem) {
-          
-        },
+        selectedItemBuilder: (item, deleteSelectedItem) {},
 
         // TODO: go to the anime specific page when clicked
         onItemSelected: (item) {
@@ -185,18 +183,49 @@ class FirstPageState extends State<FirstPage> {
                   Center(
                     child: Text(
                       doc.documentID,
-                      textScaleFactor: 2,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
-                  ListTile(
-                    leading: Text(
-                      "Genre: " + data["Genre"].toString(),
-                      textScaleFactor: 1.3,
-                      textAlign: TextAlign.center,
-                    ),
-                    trailing: Text(
-                      "Mean Score: " + data["Mean Score"].toString(),
-                      textScaleFactor: 1.3,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16, right: 16),
+                    child: ListTile(
+                      subtitle: Row(
+                        children: <Widget>[
+                          Text(
+                            "Genre: ",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            data["Genre"].toString(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                          Spacer(),
+                          Text(
+                            "Mean Score: ",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                          Text(
+                            data["Mean Score"].toString(),
+                            style: TextStyle(
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   )
                 ],
