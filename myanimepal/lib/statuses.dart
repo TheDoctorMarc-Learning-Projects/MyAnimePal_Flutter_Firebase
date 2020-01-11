@@ -38,6 +38,26 @@ Future<int> getAniMangaUserValueB(
   return result.data[value];
 }
 
+Future<List<DocumentSnapshot>> getAnimeListUser(
+    String userName) async {
+  QuerySnapshot result = await Firestore.instance
+      .collection("users")
+      .document(userName)
+      .collection("animes")
+      .getDocuments();
+  return result.documents;
+}
+
+Future<List<DocumentSnapshot>> getMangaListUser(
+    String userName) async {
+  QuerySnapshot result = await Firestore.instance
+      .collection("users")
+      .document(userName)
+      .collection("mangas")
+      .getDocuments();
+  return result.documents;
+}
+
 Future<bool> setAniMangaUserValue(String userName, String aniMangaName,
     bool anime, String valueName, dynamic value) async {
   String collection = (anime) ? "animes" : "mangas";

@@ -82,7 +82,7 @@ class FirstPageState extends State<FirstPage> {
         // TODO: go to the anime specific page when clicked
         onItemSelected: (item) {
           setState(() {
-            setupDescriptionPage(item); 
+            setupDescriptionPage(item);
           });
         });
   }
@@ -92,8 +92,8 @@ class FirstPageState extends State<FirstPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Container(
-          height: 70.0,
-          width: 70.0,
+          height: 50.0,
+          width: 50.0,
           child: FittedBox(
             child: FloatingActionButton(
               heroTag: "btn1",
@@ -114,8 +114,8 @@ class FirstPageState extends State<FirstPage> {
           width: 16,
         ),
         Container(
-          height: 70.0,
-          width: 70.0,
+          height: 50.0,
+          width: 50.0,
           child: FittedBox(
             child: FloatingActionButton(
               backgroundColor: Colors.lightBlue[900],
@@ -131,11 +131,7 @@ class FirstPageState extends State<FirstPage> {
               onPressed: () {
                 setState(() {
                   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => PersonalPage(
-                      user: widget.user,
-                      animeData: widget.animeData,
-                      mangaData: widget.mangaData,
-                    ),
+                    builder: (context) => PersonalPage(user: widget.user),
                   ));
                 });
               },
@@ -218,8 +214,8 @@ class FirstPageState extends State<FirstPage> {
   }
 
   void setupDescriptionPage(DocumentSnapshot aniManga) {
-    DescriptionPage page = createDescriptionPage(aniManga) as DescriptionPage; 
-    page.setupStatus(); 
+    DescriptionPage page = createDescriptionPage(aniManga) as DescriptionPage;
+    page.setupStatus();
   }
 
   createDescriptionPage(DocumentSnapshot aniManga) async {
