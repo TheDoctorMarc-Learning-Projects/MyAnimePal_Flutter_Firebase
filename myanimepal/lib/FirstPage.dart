@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:myanimepal/statuses.dart';
 import 'package:search_widget/search_widget.dart';
 import 'DescriptionPage.dart';
+import 'PersonalPage.dart';
 
 class FirstPage extends StatefulWidget {
   FirebaseUser user;
@@ -130,7 +131,15 @@ class FirstPageState extends State<FirstPage> {
                 textAlign: TextAlign.center,
               ),
               onPressed: () {
-                setState(() {});
+                setState(() {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => PersonalPage(
+                      user: widget.user,
+                      animeData: widget.animeData,
+                      mangaData: widget.mangaData,
+                    ),
+                  ));
+                });
               },
             ),
           ),
