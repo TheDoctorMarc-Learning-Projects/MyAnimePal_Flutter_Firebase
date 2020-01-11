@@ -111,8 +111,7 @@ class PersonalPageState extends State<PersonalPage> {
                       DescriptionPage(user: widget.user, aniManga: item)));
             });
           });
-    }
-    else{
+    } else {
       return Container(
         width: 0,
         height: 0,
@@ -142,9 +141,8 @@ class PersonalPageState extends State<PersonalPage> {
   }
 
   animangaList(String list) {
-    if (widget.animeData != null &&
-        widget.mangaData != null &&
-        widget.aniMangaData != null) {
+    if ((animes && widget.animeData != null) ||
+        (!animes && widget.mangaData != null)) {
       return StreamBuilder(
         stream: Firestore.instance.collection(list).snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -213,8 +211,7 @@ class PersonalPageState extends State<PersonalPage> {
           );
         },
       );
-    }
-    else{
+    } else {
       return Container(
         width: 0,
         height: 0,

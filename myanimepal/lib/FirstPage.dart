@@ -182,9 +182,7 @@ class FirstPageState extends State<FirstPage> {
                         ),
                       ),
                       onDoubleTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => DescriptionPage(
-                                user: widget.user, aniManga: doc)));
+                        setupDescriptionPage(doc);
                         //Open the second page with this meal
                       },
                     ),
