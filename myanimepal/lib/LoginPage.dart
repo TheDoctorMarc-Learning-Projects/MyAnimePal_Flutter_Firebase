@@ -20,119 +20,122 @@ class SingInState extends State<SingIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            "Login to MyAnimePal",
-            style: TextStyle(color: Colors.black),
-          ),
-          backgroundColor: Colors.white,
-          actions: <Widget>[
-            Image.network(
-                "https://firebasestorage.googleapis.com/v0/b/myanimepal.appspot.com/o/MyAnimePalLogo.png?alt=media&token=57926b6e-1808-43c8-9d99-e4b5572ef93e")
-          ],
+      appBar: AppBar(
+        title: Text(
+          "Login to MyAnimePal",
+          style: TextStyle(color: Colors.black),
         ),
-        body: Container
-        (
-          color: Color.fromARGB(255, 0, 0, 20),
-          child: Form
-          (
-          key: formKey,
-          child: Column
-        (
+        backgroundColor: Colors.white,
+        actions: <Widget>[
+          Image.network(
+              "https://firebasestorage.googleapis.com/v0/b/myanimepal.appspot.com/o/MyAnimePalLogo.png?alt=media&token=57926b6e-1808-43c8-9d99-e4b5572ef93e")
+        ],
+      ),
+      body: Container(
+        color: Color.fromARGB(255, 0, 0, 20),
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          
-          children: <Widget>
-          [
+          children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(left:16, right:16),
-              child: TextFormField
-              (
-                validator: (input)
-                {
-                  if(input.isEmpty)
-                  {
-                    return "Please try again"; 
+              padding: const EdgeInsets.only(bottom: 32),
+              child: Text(
+                "MyAnimePal",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 48, left: 16),
+              child: TextFormField(
+                validator: (input) {
+                  if (input.isEmpty) {
+                    return "Please try again";
                   }
                 },
                 onSaved: (input) {
-                  email = input; 
+                  email = input;
                 },
-                decoration: InputDecoration(filled: true, fillColor: Colors.white, labelText: "Enter your e-mail",
-                labelStyle: TextStyle(color: Colors.black)),
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  labelText: "Enter your e-mail",
+                  labelStyle: TextStyle(color: Colors.black),
+                  icon: Icon(
+                    Icons.email,
+                    color: Colors.white,
+                  ),
+                ),
                 style: TextStyle(fontSize: 20, color: Colors.black),
               ),
             ),
-
-             SizedBox(height: MediaQuery.of(context).size.height / 30),
-
+            SizedBox(height: MediaQuery.of(context).size.height / 30),
             Padding(
-              padding: const EdgeInsets.only(left:16, right:16),
-              child: TextFormField
-              (
-                validator: (input)
-                {
-                  if(input.isEmpty)
-                  {
-                    return "Please try again"; 
+              padding: const EdgeInsets.only(left: 16, right: 48),
+              child: TextFormField(
+                  validator: (input) {
+                    if (input.isEmpty) {
+                      return "Please try again";
+                    }
+                  },
+                  onSaved: (input) {
+                    password = input;
+                  },
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    labelText: "Enter your password",
+                    labelStyle: TextStyle(color: Colors.black),
+                    icon: Icon(
+                      Icons.vpn_key,
+                      color: Colors.white,
+                    ),
+                  ),
+                  style: TextStyle(fontSize: 20, color: Colors.black),
+                  obscureText: true),
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height / 30),
+            Padding(
+              padding: const EdgeInsets.only(left: 16, right: 48),
+              child: TextFormField(
+                validator: (input) {
+                  if (input.isEmpty) {
+                    return "Please try again";
                   }
                 },
                 onSaved: (input) {
-                  password = input; 
+                  name = input;
                 },
-                decoration: InputDecoration(filled: true, fillColor: Colors.white, labelText: "Enter your password",
-                labelStyle: TextStyle(color: Colors.black)),
-                style: TextStyle(fontSize: 20, color: Colors.black),
-                obscureText: true
-              ),
-            ),
-
-             SizedBox(height: MediaQuery.of(context).size.height / 30),
-
-            Padding(
-              padding: const EdgeInsets.only(left:16, right:16),
-              child: TextFormField
-              (
-                validator: (input)
-                {
-                  if(input.isEmpty)
-                  {
-                    return "Please try again"; 
-                  }
-                },
-                onSaved: (input) {
-                  name = input; 
-                },
-                decoration: InputDecoration(filled: true, fillColor: Colors.white, labelText: "Enter your username",
-                labelStyle: TextStyle(color: Colors.black)),
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  labelText: "Enter your username",
+                  labelStyle: TextStyle(color: Colors.black),
+                  icon: Icon(
+                    Icons.person,
+                    color: Colors.white,
+                  ),
+                ),
                 style: TextStyle(fontSize: 20, color: Colors.black),
               ),
             ),
-
-             SizedBox(height: MediaQuery.of(context).size.height / 40),
-
-            RaisedButton
-            (
+            SizedBox(height: MediaQuery.of(context).size.height / 40),
+            RaisedButton(
               onPressed: _signIn,
               child: Text("Sign in"),
             ),
-
-            
-            RaisedButton
-            (
+            RaisedButton(
               onPressed: _signUp,
-              child: Text("Sign up",),
+              child: Text(
+                "Sign up",
+              ),
             )
-
-
           ],
-
-        )
-        )
-
-        )
-        
-     ); 
-
+        ),
+      ),
+    );
   }
 
   Future<void> _signIn() async {
@@ -148,8 +151,7 @@ class SingInState extends State<SingIn> {
                 animeData: widget.animeData,
                 mangaData: widget.mangaData)));
       } catch (e) {
-
-        log(e.toString()); 
+        log(e.toString());
       }
     }
   }
