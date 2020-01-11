@@ -55,7 +55,7 @@ class PersonalPageState extends State<PersonalPage> {
             child: Padding(
               padding: const EdgeInsets.only(top: 16, bottom: 16),
               child: Text(
-                "Personal Page",
+                "Profile Page",
                 style: TextStyle(
                   fontSize: 24,
                 ),

@@ -169,7 +169,7 @@ class SingInState extends State<SingIn> {
         await _addUserToDatabase(newUser);
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => FirstPage(
-                user: result.user,
+                user: newUser,
                 animeData: widget.animeData,
                 mangaData: widget.mangaData)));
       } catch (e) {}
