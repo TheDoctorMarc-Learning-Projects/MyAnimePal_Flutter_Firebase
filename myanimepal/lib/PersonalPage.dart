@@ -112,6 +112,12 @@ class PersonalPageState extends State<PersonalPage> {
             });
           });
     }
+    else{
+      return Container(
+        width: 0,
+        height: 0,
+      );
+    }
   }
 
   toggleAniMangaViewButton() {
@@ -206,6 +212,12 @@ class PersonalPageState extends State<PersonalPage> {
             ),
           );
         },
+      );
+    }
+    else{
+      return Container(
+        width: 0,
+        height: 0,
       );
     }
   }

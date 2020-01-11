@@ -27,29 +27,31 @@ class FirstPageState extends State<FirstPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          iconTheme: IconThemeData(
-            color: Colors.black,
-          ),
-          title: Text(
-            "MyAnimePal", // TODO: Show this in the user list, not here
-            style: TextStyle(color: Colors.black, fontSize: 15),
-          ),
-          backgroundColor: Colors.white,
-          actions: <Widget>[
-            Image.network(
-                "https://firebasestorage.googleapis.com/v0/b/myanimepal.appspot.com/o/MyAnimePalLogo.png?alt=media&token=57926b6e-1808-43c8-9d99-e4b5572ef93e")
-          ],
+      appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Colors.black,
         ),
-        body: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              searchBar(),
-              SizedBox(height: 10),
-              toggleAniMangaViewButton(),
-              SizedBox(height: 10),
-              (animes) ? animangaList("animes") : animangaList("mangas"),
-            ]));
+        title: Text(
+          "MyAnimePal", // TODO: Show this in the user list, not here
+          style: TextStyle(color: Colors.black, fontSize: 15),
+        ),
+        backgroundColor: Colors.white,
+        actions: <Widget>[
+          Image.network(
+              "https://firebasestorage.googleapis.com/v0/b/myanimepal.appspot.com/o/MyAnimePalLogo.png?alt=media&token=57926b6e-1808-43c8-9d99-e4b5572ef93e")
+        ],
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          searchBar(),
+          SizedBox(height: 10),
+          toggleAniMangaViewButton(),
+          SizedBox(height: 10),
+          (animes) ? animangaList("animes") : animangaList("mangas"),
+        ],
+      ),
+    );
   }
 
   searchBar() {
