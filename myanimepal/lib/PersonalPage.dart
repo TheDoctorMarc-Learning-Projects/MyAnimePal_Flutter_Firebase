@@ -45,6 +45,17 @@ class PersonalPageState extends State<PersonalPage> {
         body: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 16, bottom: 16),
+                  child: Text(
+                    "Personal Page",
+                    style: TextStyle(
+                      fontSize: 24,
+                    ),
+                  ),
+                ),
+              ),
               searchBar(),
               SizedBox(height: 10),
               toggleAniMangaViewButton(),

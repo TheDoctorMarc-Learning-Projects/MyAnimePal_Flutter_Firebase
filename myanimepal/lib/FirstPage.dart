@@ -121,6 +121,7 @@ class FirstPageState extends State<FirstPage> {
           width: 70.0,
           child: FittedBox(
             child: FloatingActionButton(
+              backgroundColor: Colors.lightBlue[900],
               heroTag: "btn2",
               splashColor: Colors.cyan,
               child: Text(
