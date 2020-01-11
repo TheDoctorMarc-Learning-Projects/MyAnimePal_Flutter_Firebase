@@ -5,10 +5,10 @@ import 'package:myanimepal/statuses.dart';
 import 'package:search_widget/search_widget.dart';
 import 'DescriptionPage.dart';
 
-class FirstPage extends StatefulWidget {
+class PersonalPage extends StatefulWidget {
   FirebaseUser user;
   List<DocumentSnapshot> animeData, mangaData, aniMangaData;
-  FirstPage(
+  PersonalPage(
       {@required this.user,
       @required this.animeData,
       @required this.mangaData}) {
@@ -16,10 +16,10 @@ class FirstPage extends StatefulWidget {
   }
 
   @override
-  FirstPageState createState() => FirstPageState();
+  PersonalPageState createState() => PersonalPageState();
 }
 
-class FirstPageState extends State<FirstPage> {
+class PersonalPageState extends State<PersonalPage> {
   DocumentSnapshot selectedItem;
   bool animes = true;
 
@@ -31,7 +31,9 @@ class FirstPageState extends State<FirstPage> {
             color: Colors.black,
           ),
           title: Text(
-            "MyAnimePal", // TODO: Show this in the user list, not here
+            "Viewing " +
+                widget.user.displayName +
+                "'s MyAnimePal", // TODO: Show this in the user list, not here
             style: TextStyle(color: Colors.black, fontSize: 15),
           ),
           backgroundColor: Colors.white,
@@ -90,52 +92,23 @@ class FirstPageState extends State<FirstPage> {
   }
 
   toggleAniMangaViewButton() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Container(
-          height: 70.0,
-          width: 70.0,
-          child: FittedBox(
-            child: FloatingActionButton(
-              heroTag: "btn1",
-              splashColor: Colors.cyan,
-              child: Text(
-                "Anime/Manga",
-                textAlign: TextAlign.center,
-              ),
-              onPressed: () {
-                setState(() {
-                  animes = !animes;
-                });
-              },
-            ),
+    return Container(
+      height: 70.0,
+      width: 70.0,
+      child: FittedBox(
+        child: FloatingActionButton(
+          splashColor: Colors.cyan,
+          child: Text(
+            "Anime/Manga",
+            textAlign: TextAlign.center,
           ),
+          onPressed: () {
+            setState(() {
+              animes = !animes;
+            });
+          },
         ),
-        SizedBox(
-          width: 16,
-        ),
-        Container(
-          height: 70.0,
-          width: 70.0,
-          child: FittedBox(
-            child: FloatingActionButton(
-              heroTag: "btn2",
-              splashColor: Colors.cyan,
-              child: Text(
-                "Personal Page",
-                style: TextStyle(
-                  fontSize: 11,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              onPressed: () {
-                setState(() {});
-              },
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 
