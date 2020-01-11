@@ -82,10 +82,7 @@ class FirstPageState extends State<FirstPage> {
         // TODO: go to the anime specific page when clicked
         onItemSelected: (item) {
           setState(() {
-            selectedItem = item;
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) =>
-                    DescriptionPage(user: widget.user, aniManga: item)));
+            setupDescriptionPage(item); 
           });
         });
   }
@@ -218,5 +215,17 @@ class FirstPageState extends State<FirstPage> {
         );
       },
     );
+  }
+
+  void setupDescriptionPage(DocumentSnapshot aniManga) {
+    DescriptionPage page = createDescriptionPage(aniManga) as DescriptionPage; 
+    page.setupStatus(); 
+  }
+
+  createDescriptionPage(DocumentSnapshot aniManga) async {
+    var page = new DescriptionPage(aniManga: aniManga, user: widget.user);
+    await Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return page;
+    }));
   }
 }

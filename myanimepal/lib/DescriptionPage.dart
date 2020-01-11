@@ -137,6 +137,25 @@ class DescriptionPageState extends State<DescriptionPage> {
           child: Column(
         children: <Widget>[
           Container(
+              height: 70.0,
+              width: 70.0,
+              child: FittedBox(
+                  child: FloatingActionButton(
+                splashColor: Colors.cyan,
+                child: Text(
+                  "Refresh",
+                  textAlign: TextAlign.center,
+                  textScaleFactor: 0.8,
+                ),
+                onPressed: () {
+                  setState(() {
+                    widget.setupStatus();
+                    widget.createState();
+                  });
+                },
+              ))),
+          SizedBox(height: 10),
+          Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
