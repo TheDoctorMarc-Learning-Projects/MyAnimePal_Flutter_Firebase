@@ -1,14 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:myanimepal/statuses.dart' as prefix0;
+import 'package:myanimepal/statuses.dart';
 import 'statuses.dart';
 
 class DescriptionPage extends StatefulWidget {
   FirebaseUser user;
   DocumentSnapshot aniManga;
   bool isAnime, userHasIt;
-  String status = "Not Found";
+  String status = "Not Initialized";
   int episodes = 0, score = 0;
   DescriptionPage({@required this.user, @required this.aniManga}) {
     isAnime = isAnimeFromPath(aniManga.reference.path.toString());
@@ -62,7 +62,7 @@ class DescriptionPageState extends State<DescriptionPage> {
           ),
           onPressed: () {
             setState(() {
-              // TODO: add animanga in user's firebase:: add with values: status (Plan to...), score to 0, and Watched/Readed to 0
+              addAniMangaToUser();
             });
           },
         )));
@@ -79,10 +79,14 @@ class DescriptionPageState extends State<DescriptionPage> {
                     ((widget.isAnime)
                         ? widget.aniManga.data["Episodes"].toString()
                         : widget.aniManga.data["Chapters"].toString()),
-                labelText: (widget.isAnime)
-                    ? 'Watched'
-                    : 'Readed'), // TODO: update this in firebase
+                labelText: (widget.isAnime) ? 'Watched' : 'Readed'),
             keyboardType: TextInputType.number,
+            onSubmitted: (value) {
+              setState(() {
+                setUserValue(
+                    (widget.isAnime) ? 'Watched' : 'Readed', int.parse(value));
+              });
+            },
           ),
         ),
         /*  Container(
@@ -100,8 +104,7 @@ class DescriptionPageState extends State<DescriptionPage> {
           }).toList(),
           onChanged: (String value) {
             setState(() {
-              widget.status = value;
-              // TODO: update in firebase
+              setUserValue("Status", value);
             });
           },
         ),
@@ -111,8 +114,14 @@ class DescriptionPageState extends State<DescriptionPage> {
           child: TextField(
             decoration: InputDecoration(
                 hintText: "1-10",
-                labelText: "Score"), // TODO: update this in firebase -> do not accept 0 score, only 1-10 ints
+                labelText:
+                    "Score"), // TODO: update this in firebase -> do not accept 0 score, only 1-10 ints
             keyboardType: TextInputType.number,
+            onSubmitted: (value) {
+              setState(() {
+                setUserValue("Score", int.parse(value));
+              });
+            },
           ),
         )
       ],
@@ -141,12 +150,21 @@ class DescriptionPageState extends State<DescriptionPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              Text("Genre: " + widget.aniManga.data["Genre"], textScaleFactor: 1.3),
-              Text("Mean Score: " + getScoreString(widget.aniManga.data["Mean Score"]).toString(), textScaleFactor: 1.3)
+              Text("Genre: " + widget.aniManga.data["Genre"],
+                  textScaleFactor: 1.3),
+              Text(
+                  "Mean Score: " +
+                      getScoreString(widget.aniManga.data["Mean Score"])
+                          .toString(),
+                  textScaleFactor: 1.3)
             ],
           ),
           SizedBox(height: 10),
-          ((widget.status == "Not Found")  ? addAniMangaWorkflow() : editAniMangaWorkflow()),
+          ((widget.status == "Not Initialized")
+              ? CircularProgressIndicator()
+              : (((widget.status == "Not Found")
+                  ? addAniMangaWorkflow()
+                  : editAniMangaWorkflow()))),
           SizedBox(height: 10),
           Center(
             child: Text(
@@ -157,5 +175,30 @@ class DescriptionPageState extends State<DescriptionPage> {
         ],
       )),
     );
+  }
+
+  void setUserValue(String valueName, dynamic value) async {
+    await setAniMangaUserValue(widget.user.displayName,
+        widget.aniManga.documentID, widget.isAnime, valueName, value);
+
+    // Refresh data
+    await widget.setupStatus();
+  }
+
+  void addAniMangaToUser() async {
+    // Add to firebase, with some default values
+    await Firestore.instance
+        .collection('users')
+        .document(widget.user.displayName)
+        .collection((widget.isAnime) ? 'animes' : 'mangas')
+        .document(widget.aniManga.documentID)
+        .setData({
+      'Status': ((widget.isAnime) ? 'Plan To Watch' : 'Plan To Read'),
+      'Score': 0,
+      ((widget.isAnime) ? 'Watched' : 'Readed'): 0
+    });
+
+    // Refresh data
+    await widget.setupStatus();
   }
 }
