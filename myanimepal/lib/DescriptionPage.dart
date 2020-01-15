@@ -195,7 +195,10 @@ class DescriptionPageState extends State<DescriptionPage> {
         .setData({
       'Status': ((widget.isAnime) ? 'Plan To Watch' : 'Plan To Read'),
       'Score': 0,
-      ((widget.isAnime) ? 'Watched' : 'Readed'): 0
+      ((widget.isAnime) ? 'Watched' : 'Readed'): 0,
+      'Genre': widget.aniManga.data['Genre'],
+      'ImagePath': widget.aniManga.data['ImagePath'],
+
     });
 
     // Refresh data

@@ -9,11 +9,7 @@ import 'statuses.dart';
 class PersonalPage extends StatefulWidget {
   FirebaseUser user;
   List<DocumentSnapshot> animeData, mangaData, aniMangaData;
-  PersonalPage({@required this.user}) {
-    if (animeData != null || mangaData != null) {
-      aniMangaData = animeData + mangaData;
-    }
-  }
+  PersonalPage({@required this.user});
 
   @override
   PersonalPageState createState() => PersonalPageState();
@@ -23,16 +19,22 @@ class PersonalPageState extends State<PersonalPage> {
   DocumentSnapshot selectedItem;
   bool animes = true;
 
-  setupStatus() async {
+  void refresh() {
+    setState(() {});
+  }
+
+  void setupStatus(Function refresh) async {
     widget.animeData = await getAnimeListUser(widget.user.displayName);
     widget.mangaData = await getMangaListUser(widget.user.displayName);
-
-    setState(() {});
+    if (widget.animeData != null || widget.mangaData != null) {
+      widget.aniMangaData = widget.animeData + widget.mangaData;
+    }
+    refresh();
   }
 
   @override
   void initState() {
-    setupStatus();
+    setupStatus(refresh);
     super.initState();
   }
 
@@ -207,7 +209,7 @@ class PersonalPageState extends State<PersonalPage> {
                         textAlign: TextAlign.center,
                       ),
                       trailing: Text(
-                        "Mean Score: " + data["Mean Score"].toString(),
+                        "Score: " + data["Score"].toString(),
                         textScaleFactor: 1.3,
                       ),
                     )
@@ -225,4 +227,5 @@ class PersonalPageState extends State<PersonalPage> {
       );
     }
   }
+
 }
