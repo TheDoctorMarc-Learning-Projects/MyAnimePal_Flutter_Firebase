@@ -9,17 +9,7 @@ import 'statuses.dart';
 class PersonalPage extends StatefulWidget {
   FirebaseUser user;
   List<DocumentSnapshot> animeData, mangaData, aniMangaData;
-  PersonalPage({@required this.user}) {
-    setupStatus();
-    if (animeData != null || mangaData != null) {
-      aniMangaData = animeData + mangaData;
-    }
-  }
-
-  setupStatus() async {
-    animeData = await getAnimeListUser(user.displayName);
-    mangaData = await getMangaListUser(user.displayName);
-  }
+  PersonalPage({@required this.user});
 
   @override
   PersonalPageState createState() => PersonalPageState();
@@ -28,6 +18,23 @@ class PersonalPage extends StatefulWidget {
 class PersonalPageState extends State<PersonalPage> {
   DocumentSnapshot selectedItem;
   bool animes = true;
+
+  @override
+  void initState() {
+    void setupStatus(Function refresh) async {
+    widget.animeData = await getAnimeListUser(widget.user.displayName);
+    widget.mangaData = await getMangaListUser(widget.user.displayName);
+    refresh();
+  }
+
+    setupStatus(refresh);
+    if (widget.animeData != null || widget.mangaData != null) {
+      widget.aniMangaData = widget.animeData + widget.mangaData;
+    }
+  
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -217,5 +224,9 @@ class PersonalPageState extends State<PersonalPage> {
         height: 0,
       );
     }
+  }
+
+  void refresh() {
+    setState(() {});
   }
 }
