@@ -62,7 +62,7 @@ class PersonalPageState extends State<PersonalPage> {
         children: <Widget>[
           Center(
             child: Padding(
-              padding: const EdgeInsets.only(top: 16, bottom: 16),
+              padding: const EdgeInsets.only(top: 24, bottom: 16),
               child: Text(
                 "Profile Page",
                 style: TextStyle(
@@ -74,9 +74,10 @@ class PersonalPageState extends State<PersonalPage> {
           ),
           //searchBar(),
           SizedBox(height: 10),
+          (animes) ? animangaList("animes") : animangaList("mangas"),
+          SizedBox(height: 20),
           toggleAniMangaViewButton(),
           SizedBox(height: 20),
-          (animes) ? animangaList("animes") : animangaList("mangas"),
         ],
       ),
     );
@@ -134,18 +135,6 @@ class PersonalPageState extends State<PersonalPage> {
       height: 70.0,
       width: 70.0,
       child: FittedBox(
-        /*child: FloatingActionButton(
-          splashColor: Colors.cyan,
-          child: Text(
-            "Anime/Manga",
-            textAlign: TextAlign.center,
-          ),
-          onPressed: () {
-            setState(() {
-              animes = !animes;
-            });
-          },
-        ),*/
         child: RaisedButton(
           child: Text(
             (animes) ? "Show Manga" : "Show Anime",
