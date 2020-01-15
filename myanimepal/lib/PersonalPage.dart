@@ -10,15 +10,9 @@ class PersonalPage extends StatefulWidget {
   FirebaseUser user;
   List<DocumentSnapshot> animeData, mangaData, aniMangaData;
   PersonalPage({@required this.user}) {
-    setupStatus();
     if (animeData != null || mangaData != null) {
       aniMangaData = animeData + mangaData;
     }
-  }
-
-  setupStatus() async {
-    animeData = await getAnimeListUser(user.displayName);
-    mangaData = await getMangaListUser(user.displayName);
   }
 
   @override
@@ -28,6 +22,19 @@ class PersonalPage extends StatefulWidget {
 class PersonalPageState extends State<PersonalPage> {
   DocumentSnapshot selectedItem;
   bool animes = true;
+
+  setupStatus() async {
+    widget.animeData = await getAnimeListUser(widget.user.displayName);
+    widget.mangaData = await getMangaListUser(widget.user.displayName);
+
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    setupStatus();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
