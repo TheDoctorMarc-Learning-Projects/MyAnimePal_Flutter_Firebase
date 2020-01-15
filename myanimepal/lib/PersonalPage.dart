@@ -67,21 +67,22 @@ class PersonalPageState extends State<PersonalPage> {
                 "Profile Page",
                 style: TextStyle(
                   fontSize: 24,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
           ),
-          searchBar(),
+          //searchBar(),
           SizedBox(height: 10),
           toggleAniMangaViewButton(),
-          SizedBox(height: 10),
+          SizedBox(height: 20),
           (animes) ? animangaList("animes") : animangaList("mangas"),
         ],
       ),
     );
   }
 
-  searchBar() {
+  /*searchBar() {
     if (widget.animeData != null &&
         widget.mangaData != null &&
         widget.aniMangaData != null) {
@@ -126,19 +127,35 @@ class PersonalPageState extends State<PersonalPage> {
         height: 0,
       );
     }
-  }
+  }*/
 
   toggleAniMangaViewButton() {
     return Container(
       height: 70.0,
       width: 70.0,
       child: FittedBox(
-        child: FloatingActionButton(
+        /*child: FloatingActionButton(
           splashColor: Colors.cyan,
           child: Text(
             "Anime/Manga",
             textAlign: TextAlign.center,
           ),
+          onPressed: () {
+            setState(() {
+              animes = !animes;
+            });
+          },
+        ),*/
+        child: RaisedButton(
+          child: Text(
+            (animes) ? "Show Manga" : "Show Anime",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+          color: Colors.blue,
+          elevation: 10,
           onPressed: () {
             setState(() {
               animes = !animes;
@@ -161,10 +178,12 @@ class PersonalPageState extends State<PersonalPage> {
           return Flexible(
             // TODO: this is just a test. display only X ammunt of animes and mangas,
             // separe them, add a button to see the  anime/ manga page
-            child: ListView.builder(
+            child: GridView.builder(
               itemCount: (list == "animes")
                   ? widget.animeData.length
                   : widget.mangaData.length,
+              gridDelegate:
+                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
               itemBuilder: (context, index) {
                 DocumentSnapshot doc = (list == "animes")
                     ? widget.animeData[index]
@@ -173,15 +192,17 @@ class PersonalPageState extends State<PersonalPage> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    SizedBox(height: 40),
+                    // SizedBox(height: 40),
                     Padding(
-                      padding: const EdgeInsets.only(
-                          left: 32, right: 32, bottom: 16),
+                      padding:
+                          const EdgeInsets.only(left: 16, right: 16, bottom: 8),
                       child: InkWell(
                         child: Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.width,
+                          width: 100,
+                          height: 166,
                           decoration: BoxDecoration(
+                            color: Colors.black54,
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
                             image: DecorationImage(
                               fit: BoxFit.fill,
                               image: NetworkImage(data["ImagePath"]),
@@ -199,20 +220,12 @@ class PersonalPageState extends State<PersonalPage> {
                     Center(
                       child: Text(
                         doc.documentID,
-                        textScaleFactor: 2,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                    ListTile(
-                      leading: Text(
-                        "Genre: " + data["Genre"].toString(),
-                        textScaleFactor: 1.3,
-                        textAlign: TextAlign.center,
-                      ),
-                      trailing: Text(
-                        "Score: " + data["Score"].toString(),
-                        textScaleFactor: 1.3,
-                      ),
-                    )
                   ],
                 );
               },
@@ -227,5 +240,4 @@ class PersonalPageState extends State<PersonalPage> {
       );
     }
   }
-
 }
