@@ -87,16 +87,17 @@ class FirstPageState extends State<FirstPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Container(
-          height: 50.0,
-          width: 50.0,
           child: FittedBox(
-            child: FloatingActionButton(
-              heroTag: "btn1",
-              splashColor: Colors.cyan,
+            child: RaisedButton(
               child: Text(
-                "Anime/Manga",
+                (animes) ? "Show Manga" : "Show Anime",
                 textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                ),
               ),
+              color: Colors.blue,
+              elevation: 10,
               onPressed: () {
                 setState(() {
                   animes = !animes;
@@ -109,17 +110,16 @@ class FirstPageState extends State<FirstPage> {
           width: 16,
         ),
         Container(
-          height: 50.0,
-          width: 50.0,
           child: FittedBox(
-            child: FloatingActionButton(
-              backgroundColor: Colors.lightBlue[900],
-              heroTag: "btn2",
+            child: RaisedButton(
+              elevation: 10,
+              color: Colors.lightBlue[900],
               splashColor: Colors.cyan,
               child: Text(
                 "Personal Page",
                 style: TextStyle(
                   fontSize: 11,
+                  color: Colors.white,
                 ),
                 textAlign: TextAlign.center,
               ),
