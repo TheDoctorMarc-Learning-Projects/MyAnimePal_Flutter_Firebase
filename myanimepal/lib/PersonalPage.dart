@@ -67,21 +67,22 @@ class PersonalPageState extends State<PersonalPage> {
                 "Profile Page",
                 style: TextStyle(
                   fontSize: 24,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
           ),
-          searchBar(),
+          //searchBar(),
           SizedBox(height: 10),
           toggleAniMangaViewButton(),
-          SizedBox(height: 10),
+          SizedBox(height: 20),
           (animes) ? animangaList("animes") : animangaList("mangas"),
         ],
       ),
     );
   }
 
-  searchBar() {
+  /*searchBar() {
     if (widget.animeData != null &&
         widget.mangaData != null &&
         widget.aniMangaData != null) {
@@ -126,19 +127,35 @@ class PersonalPageState extends State<PersonalPage> {
         height: 0,
       );
     }
-  }
+  }*/
 
   toggleAniMangaViewButton() {
     return Container(
       height: 70.0,
       width: 70.0,
       child: FittedBox(
-        child: FloatingActionButton(
+        /*child: FloatingActionButton(
           splashColor: Colors.cyan,
           child: Text(
             "Anime/Manga",
             textAlign: TextAlign.center,
           ),
+          onPressed: () {
+            setState(() {
+              animes = !animes;
+            });
+          },
+        ),*/
+        child: RaisedButton(
+          child: Text(
+            (animes) ? "Show Manga" : "Show Anime",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+          color: Colors.blue,
+          elevation: 10,
           onPressed: () {
             setState(() {
               animes = !animes;
@@ -175,10 +192,10 @@ class PersonalPageState extends State<PersonalPage> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                   // SizedBox(height: 40),
+                    // SizedBox(height: 40),
                     Padding(
-                      padding: const EdgeInsets.only(
-                          left: 16, right: 16, bottom: 8),
+                      padding:
+                          const EdgeInsets.only(left: 16, right: 16, bottom: 8),
                       child: InkWell(
                         child: Container(
                           width: 100,
@@ -209,7 +226,6 @@ class PersonalPageState extends State<PersonalPage> {
                         ),
                       ),
                     ),
-                    
                   ],
                 );
               },
