@@ -19,20 +19,22 @@ class PersonalPageState extends State<PersonalPage> {
   DocumentSnapshot selectedItem;
   bool animes = true;
 
-  @override
-  void initState() {
-    void setupStatus(Function refresh) async {
-    widget.animeData = await getAnimeListUser(widget.user.displayName);
-    widget.mangaData = await getMangaListUser(widget.user.displayName);
-    refresh();
+  void refresh() {
+    setState(() {});
   }
 
-    setupStatus(refresh);
+  void setupStatus(Function refresh) async {
+    widget.animeData = await getAnimeListUser(widget.user.displayName);
+    widget.mangaData = await getMangaListUser(widget.user.displayName);
     if (widget.animeData != null || widget.mangaData != null) {
       widget.aniMangaData = widget.animeData + widget.mangaData;
     }
-  
-    // TODO: implement initState
+    refresh();
+  }
+
+  @override
+  void initState() {
+    setupStatus(refresh);
     super.initState();
   }
 
@@ -207,7 +209,7 @@ class PersonalPageState extends State<PersonalPage> {
                         textAlign: TextAlign.center,
                       ),
                       trailing: Text(
-                        "Mean Score: " + data["Mean Score"].toString(),
+                        "Score: " + data["Score"].toString(),
                         textScaleFactor: 1.3,
                       ),
                     )
@@ -226,7 +228,4 @@ class PersonalPageState extends State<PersonalPage> {
     }
   }
 
-  void refresh() {
-    setState(() {});
-  }
 }
