@@ -210,10 +210,7 @@ class PersonalPageState extends State<PersonalPage> {
                           ),
                         ),
                         onDoubleTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => DescriptionPage(
-                                  user: widget.user, aniManga: doc)));
-                          //Open the second page with this meal
+                          createDescriptionPage(doc, list);
                         },
                       ),
                     ),
@@ -239,5 +236,16 @@ class PersonalPageState extends State<PersonalPage> {
         height: 0,
       );
     }
+  }
+
+  createDescriptionPage(
+      DocumentSnapshot aniManga, String collectionName) async {
+    var databaseaAniManga = await Firestore.instance
+        .collection(collectionName)
+        .document(aniManga.documentID)
+        .get();
+    Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) =>
+            DescriptionPage(user: widget.user, aniManga: databaseaAniManga)));
   }
 }
