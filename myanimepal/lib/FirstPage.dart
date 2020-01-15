@@ -168,6 +168,7 @@ class FirstPageState extends State<FirstPage> {
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.width,
                         decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
                           image: DecorationImage(
                             fit: BoxFit.fill,
                             image: NetworkImage(data["ImagePath"]),

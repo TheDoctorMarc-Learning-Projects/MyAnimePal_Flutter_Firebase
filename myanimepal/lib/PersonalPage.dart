@@ -41,17 +41,23 @@ class PersonalPageState extends State<PersonalPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black45,
+      
       appBar: AppBar(
         iconTheme: IconThemeData(
-          color: Colors.black,
+          color: Colors.white,
         ),
         title: Text(
           "Viewing " +
               widget.user.displayName +
               "'s MyAnimePal", // TODO: Show this in the user list, not here
-          style: TextStyle(color: Colors.black, fontSize: 15),
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 15,
+          ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.black,
+        elevation: 20,
         actions: <Widget>[
           Image.network(
               "https://firebasestorage.googleapis.com/v0/b/myanimepal.appspot.com/o/MyAnimePalLogo.png?alt=media&token=57926b6e-1808-43c8-9d99-e4b5572ef93e")
@@ -66,8 +72,9 @@ class PersonalPageState extends State<PersonalPage> {
               child: Text(
                 "Profile Page",
                 style: TextStyle(
+                  color: Colors.white,
                   fontSize: 24,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.bold,     
                 ),
               ),
             ),
@@ -207,7 +214,8 @@ class PersonalPageState extends State<PersonalPage> {
                       child: Text(
                         doc.documentID,
                         style: TextStyle(
-                          fontSize: 16,
+                          color: Colors.white,
+                          fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
