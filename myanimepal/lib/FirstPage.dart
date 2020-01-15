@@ -77,7 +77,7 @@ class FirstPageState extends State<FirstPage> {
         // TODO: go to the anime specific page when clicked
         onItemSelected: (item) {
           setState(() {
-            setupDescriptionPage(item);
+            createDescriptionPage(item);
           });
         });
   }
@@ -175,7 +175,7 @@ class FirstPageState extends State<FirstPage> {
                         ),
                       ),
                       onDoubleTap: () {
-                        setupDescriptionPage(doc);
+                        createDescriptionPage(doc);
                         //Open the second page with this meal
                       },
                     ),
@@ -235,11 +235,6 @@ class FirstPageState extends State<FirstPage> {
         );
       },
     );
-  }
-
-  void setupDescriptionPage(DocumentSnapshot aniManga) {
-    DescriptionPage page = createDescriptionPage(aniManga) as DescriptionPage;
-    page.setupStatus();
   }
 
   createDescriptionPage(DocumentSnapshot aniManga) async {

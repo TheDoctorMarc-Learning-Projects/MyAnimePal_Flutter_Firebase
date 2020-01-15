@@ -12,16 +12,6 @@ class DescriptionPage extends StatefulWidget {
   int episodes = 0, score = 0;
   DescriptionPage({@required this.user, @required this.aniManga}) {
     isAnime = isAnimeFromPath(aniManga.reference.path.toString());
-    setupStatus();
-  }
-
-  setupStatus() async {
-    status = await getAniMangaUserValue(
-        user.displayName, aniManga.documentID, isAnime, "Status");
-    episodes = await getAniMangaUserValueB(user.displayName,
-        aniManga.documentID, isAnime, (isAnime) ? "Watched" : "Readed");
-    score = await getAniMangaUserValueB(
-        user.displayName, aniManga.documentID, isAnime, "Score");
   }
 
   @override
@@ -29,6 +19,35 @@ class DescriptionPage extends StatefulWidget {
 }
 
 class DescriptionPageState extends State<DescriptionPage> {
+  TextEditingController watchedController, scoreController;
+
+  setup() async {
+    await setupStatus();
+    watchedController =
+        new TextEditingController(text: widget.episodes.toString());
+    scoreController = new TextEditingController(text: widget.score.toString());
+  }
+
+  setupStatus() async {
+    widget.status = await getAniMangaUserValue(widget.user.displayName,
+        widget.aniManga.documentID, widget.isAnime, "Status");
+    widget.episodes = await getAniMangaUserValueB(
+        widget.user.displayName,
+        widget.aniManga.documentID,
+        widget.isAnime,
+        (widget.isAnime) ? "Watched" : "Readed");
+    widget.score = await getAniMangaUserValueB(widget.user.displayName,
+        widget.aniManga.documentID, widget.isAnime, "Score");
+
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    setup();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,61 +87,88 @@ class DescriptionPageState extends State<DescriptionPage> {
         )));
   }
 
-  editAniMangaWorkflow() {
-    return Row(
-      children: <Widget>[
-        Container(
-          width: MediaQuery.of(context).size.width * 0.25,
-          child: TextField(
-            decoration: InputDecoration(
-                hintText: "Total: " +
-                    ((widget.isAnime)
-                        ? widget.aniManga.data["Episodes"].toString()
-                        : widget.aniManga.data["Chapters"].toString()),
-                labelText: (widget.isAnime) ? 'Watched' : 'Readed'),
-            keyboardType: TextInputType.number,
-            onSubmitted: (value) {
-              setState(() {
-                setUserValue(
-                    (widget.isAnime) ? 'Watched' : 'Readed', int.parse(value));
-              });
-            },
+  deleteAniMangaWorkflow() {
+    return Container(
+        height: 70.0,
+        width: 70.0,
+        child: FittedBox(
+            child: FloatingActionButton(
+          splashColor: Colors.cyan,
+          child: Text(
+            "Remove from List",
+            textAlign: TextAlign.center,
+            textScaleFactor: 0.7,
           ),
-        ),
-        /*  Container(
-                width: MediaQuery.of(context).size.width * 0.2,
-                child: */
-        DropdownButton(
-          hint: Text(widget.status),
-          value: null,
-          items: ((widget.isAnime) ? animeStatuses : mangaStatuses)
-              .map((String item) {
-            return DropdownMenuItem(
-              value: item,
-              child: Text(item),
-            );
-          }).toList(),
-          onChanged: (String value) {
+          onPressed: () {
             setState(() {
-              setUserValue("Status", value);
+              deleteFromUser();
             });
           },
-        ),
-        /*  ),*/
-        Container(
-          width: MediaQuery.of(context).size.width * 0.2,
-          child: TextField(
-            decoration: InputDecoration(
-                hintText: "1-10",
-                labelText:
-                    "Score"), // TODO: update this in firebase -> do not accept 0 score, only 1-10 ints
-            keyboardType: TextInputType.number,
-            onSubmitted: (value) {
-              setState(() {
-                setUserValue("Score", int.parse(value));
-              });
-            },
-          ),
+        )));
+  }
+
+  editAniMangaWorkflow() {
+    return Column(
+      children: <Widget>[
+        deleteAniMangaWorkflow(),
+        Row(
+          children: <Widget>[
+            Container(
+              width: MediaQuery.of(context).size.width * 0.25,
+              child: TextField(
+                controller: watchedController,
+                decoration: InputDecoration(
+                    hintText: "Total: " +
+                        ((widget.isAnime)
+                            ? widget.aniManga.data["Episodes"].toString()
+                            : widget.aniManga.data["Chapters"].toString()),
+                    labelText: (widget.isAnime) ? 'Watched' : 'Readed'),
+                keyboardType: TextInputType.number,
+                onSubmitted: (value) {
+                  setState(() {
+                    setUserValue((widget.isAnime) ? 'Watched' : 'Readed',
+                        int.parse(value));
+                  });
+                },
+              ),
+            ),
+            /*  Container(
+                width: MediaQuery.of(context).size.width * 0.2,
+                child: */
+            DropdownButton(
+              hint: Text(widget.status),
+              value: null,
+              items: ((widget.isAnime) ? animeStatuses : mangaStatuses)
+                  .map((String item) {
+                return DropdownMenuItem(
+                  value: item,
+                  child: Text(item),
+                );
+              }).toList(),
+              onChanged: (String value) {
+                setState(() {
+                  setUserValue("Status", value);
+                });
+              },
+            ),
+            /*  ),*/
+            Container(
+              width: MediaQuery.of(context).size.width * 0.2,
+              child: TextField(
+                controller: scoreController,
+                decoration: InputDecoration(
+                    hintText: "1-10",
+                    labelText:
+                        "Score"), // TODO: update this in firebase -> do not accept 0 score, only 1-10 ints
+                keyboardType: TextInputType.number,
+                onSubmitted: (value) {
+                  setState(() {
+                    setUserValue("Score", int.parse(value));
+                  });
+                },
+              ),
+            )
+          ],
         )
       ],
     );
@@ -182,7 +228,7 @@ class DescriptionPageState extends State<DescriptionPage> {
         widget.aniManga.documentID, widget.isAnime, valueName, value);
 
     // Refresh data
-    await widget.setupStatus();
+    await setupStatus();
   }
 
   void addAniMangaToUser() async {
@@ -198,10 +244,22 @@ class DescriptionPageState extends State<DescriptionPage> {
       ((widget.isAnime) ? 'Watched' : 'Readed'): 0,
       'Genre': widget.aniManga.data['Genre'],
       'ImagePath': widget.aniManga.data['ImagePath'],
-
     });
 
     // Refresh data
-    await widget.setupStatus();
+    await setupStatus();
+  }
+
+  void deleteFromUser() async {
+    await Firestore.instance.runTransaction((Transaction myTransaction) async {
+      await myTransaction.delete(Firestore.instance
+          .collection('users')
+          .document(widget.user.displayName)
+          .collection((widget.isAnime) ? 'animes' : 'mangas')
+          .document(widget.aniManga.documentID));
+    });
+
+    // Refresh data
+    await setupStatus();
   }
 }
