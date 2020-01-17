@@ -353,16 +353,20 @@ class DescriptionPageState extends State<DescriptionPage> {
                   SizedBox(height: 20),
                   Container(
                       padding: EdgeInsets.all(20.0),
+                      width: MediaQuery.of(context).size.width,
                       height: 300,
                       decoration: BoxDecoration(color: Colors.blueGrey.shade50),
                       child: Column(children: <Widget>[
+                        (reviewDocument.documentID == widget.user.displayName)
+                            ? deleteReviewButton()
+                            : Container(),
                         Text(reviewDocument.documentID,
                             textScaleFactor: 1.2,
                             style: TextStyle(fontWeight: FontWeight.bold)),
                         SizedBox(height: 5),
                         Text(
                           reviewDocument.data['Body'],
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.start,
                         )
                       ]))
                 ],
@@ -386,6 +390,18 @@ class DescriptionPageState extends State<DescriptionPage> {
     );
   }
 
+  deleteReviewButton() {
+    return RaisedButton(
+      child: Text('Delete', textAlign: TextAlign.center),
+      onPressed: () {
+        setState(() {
+          deleteReview();
+          setupStatus();
+        });
+      },
+    );
+  }
+
   addReviewWorkflow() {
     return TextField(
       onSubmitted: (value) {
@@ -398,15 +414,22 @@ class DescriptionPageState extends State<DescriptionPage> {
     );
   }
 
-  void addReview(
-      String
-          text) async // TODO: check user does not have a review?? Maybe in the next life ...
-  {
+  void addReview(String text) async {
     await Firestore.instance
         .collection((widget.isAnime) ? 'animes' : 'mangas')
         .document(widget.aniManga.documentID)
         .collection('reviews')
         .document(widget.user.displayName)
         .setData({'Body': text});
+  }
+
+  void deleteReview() async {
+    await Firestore.instance.runTransaction((Transaction myTransaction) async {
+      await myTransaction.delete(Firestore.instance
+          .collection((widget.isAnime) ? 'animes' : 'mangas')
+          .document(widget.aniManga.documentID)
+          .collection('reviews')
+          .document(widget.user.displayName));
+    });
   }
 }
