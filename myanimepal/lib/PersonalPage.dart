@@ -42,7 +42,6 @@ class PersonalPageState extends State<PersonalPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black45,
-      
       appBar: AppBar(
         iconTheme: IconThemeData(
           color: Colors.white,
@@ -74,7 +73,7 @@ class PersonalPageState extends State<PersonalPage> {
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,
-                  fontWeight: FontWeight.bold,     
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
@@ -196,43 +195,49 @@ class PersonalPageState extends State<PersonalPage> {
                     ? widget.animeData[index]
                     : widget.mangaData[index];
                 Map<String, dynamic> data = doc.data;
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    // SizedBox(height: 40),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 16, right: 16, bottom: 8),
-                      child: InkWell(
-                        child: Container(
-                          width: 100,
-                          height: 166,
-                          decoration: BoxDecoration(
-                            color: Colors.black54,
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            image: DecorationImage(
-                              fit: BoxFit.fill,
-                              image: NetworkImage(data["ImagePath"]),
+                return (doc.documentID) != 'empty'
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          // SizedBox(height: 40),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 16, right: 16, bottom: 8),
+                            child: InkWell(
+                              child: Container(
+                                width: MediaQuery.of(context).size.width/2,
+                                height: MediaQuery.of(context).size.height / 4,
+                                decoration: BoxDecoration(
+                                  color: Colors.black54,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                  image: DecorationImage(
+                                    fit: BoxFit.fill,
+                                    image: NetworkImage(data["ImagePath"]),
+                                  ),
+                                ),
+                              ),
+                              onDoubleTap: () {
+                                createDescriptionPage(doc, list);
+                              },
                             ),
                           ),
-                        ),
-                        onDoubleTap: () {
-                          createDescriptionPage(doc, list);
-                        },
-                      ),
-                    ),
-                    Center(
-                      child: Text(
-                        doc.documentID,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                );
+                          Center(
+                            child: Text(
+                              doc.documentID,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : Container(
+                        height: 1,
+                        width: 1,
+                      );
               },
             ),
           );
