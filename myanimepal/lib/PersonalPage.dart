@@ -5,6 +5,7 @@ import 'package:myanimepal/statuses.dart';
 import 'package:search_widget/search_widget.dart';
 import 'DescriptionPage.dart';
 import 'statuses.dart';
+import 'helper.dart';
 
 class PersonalPage extends StatefulWidget {
   FirebaseUser user;
@@ -136,39 +137,34 @@ class PersonalPageState extends State<PersonalPage> {
   }*/
 
   toggleAniMangaViewButton() {
-    return Container(
-      height: 70.0,
-      width: 70.0,
-      child: FittedBox(
-        /*child: FloatingActionButton(
-          splashColor: Colors.cyan,
-          child: Text(
-            "Anime/Manga",
-            textAlign: TextAlign.center,
-          ),
-          onPressed: () {
-            setState(() {
-              animes = !animes;
-            });
-          },
-        ),*/
-        child: RaisedButton(
-          child: Text(
-            (animes) ? "Show Manga" : "Show Anime",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Colors.white,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Container(
+          child: FittedBox(
+            child: RaisedButton(
+              child: Text(
+                (animes) ? "Show Manga" : "Show Anime",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              color: Colors.blue,
+              elevation: 10,
+              onPressed: () {
+                setState(() {
+                  animes = !animes;
+                });
+              },
             ),
           ),
-          color: Colors.blue,
-          elevation: 10,
-          onPressed: () {
-            setState(() {
-              animes = !animes;
-            });
-          },
         ),
-      ),
+        SizedBox(
+          width: 16,
+        ),
+        changePictureButton()
+      ],
     );
   }
 
@@ -205,7 +201,7 @@ class PersonalPageState extends State<PersonalPage> {
                                 left: 16, right: 16, bottom: 8),
                             child: InkWell(
                               child: Container(
-                                width: MediaQuery.of(context).size.width/2,
+                                width: MediaQuery.of(context).size.width / 2,
                                 height: MediaQuery.of(context).size.height / 4,
                                 decoration: BoxDecoration(
                                   color: Colors.black54,
@@ -260,5 +256,39 @@ class PersonalPageState extends State<PersonalPage> {
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) =>
             DescriptionPage(user: widget.user, aniManga: databaseaAniManga)));
+  }
+
+  changePictureButton() {
+    return Theme(
+        data: Theme.of(context).copyWith(
+          canvasColor: Colors.transparent,
+        ),
+        child: DropdownButton(
+          hint: Text('Change Profile'),
+          value: null,
+          items: (profileURLs).map((String item) {
+            return DropdownMenuItem(
+              value: item,
+              child: Image.network(
+                item,
+                width: MediaQuery.of(context).size.width * 0.3,
+                height: MediaQuery.of(context).size.width * 0.3,
+              ),
+            );
+          }).toList(),
+          onChanged: (String value) {
+            setState(() {
+              setUserProfileURL(value);
+            });
+          },
+        ));
+  }
+
+  setUserProfileURL(String url) async {
+    await Firestore.instance
+        .collection('users')
+        .document(widget.user.displayName)
+        .updateData({'profileURL': url});
+    setState(() {});
   }
 }

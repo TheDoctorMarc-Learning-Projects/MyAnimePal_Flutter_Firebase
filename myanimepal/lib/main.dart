@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'LoginPage.dart';
+import 'helper.dart';
 
 _loadAnimeData() async {
   QuerySnapshot animesSnapshot =
@@ -14,10 +15,21 @@ _loadMangaData() async {
   return mangasSnapshot.documents;
 }
 
+_loadProfileURLs() async {
+  profileURLs = new List<String>();
+  QuerySnapshot profilesSnapshot =
+      await Firestore.instance.collection("profilePics").getDocuments();
+  var profileDocuments = profilesSnapshot.documents;
+  for (int i = 0; i < profileDocuments.length; ++i) {
+    profileURLs.add(profileDocuments[i].data['url'].toString());
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   var animeData = await _loadAnimeData();
   var mangaData = await _loadMangaData();
+  _loadProfileURLs();
   runApp(MyAnimePal(animeData: animeData, mangaData: mangaData));
 }
 
@@ -39,5 +51,3 @@ class MyAnimePal extends StatelessWidget {
         home: SingIn(animeData: animeData, mangaData: mangaData));
   }
 }
-
-

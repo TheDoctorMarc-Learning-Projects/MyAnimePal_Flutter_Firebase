@@ -184,12 +184,18 @@ class SingInState extends State<SingIn> {
         .document(user.displayName)
         .collection('animes')
         .document("empty")
-        .setData({"empty": "empty"});
+        .setData({"": "empty"});
     Firestore.instance
         .collection('users')
         .document(user.displayName)
         .collection('mangas')
         .document("empty")
         .setData({"empty": "empty"});
+
+    // darkmode and profile url
+    Firestore.instance.collection('users').document(user.displayName).setData({
+      'profileURL':
+          'https://firebasestorage.googleapis.com/v0/b/myanimepal.appspot.com/o/profilePics%2Fdefault.jpg?alt=media&token=a4959d4c-8474-4536-b4a9-46d2c93193af'
+    });
   }
 }

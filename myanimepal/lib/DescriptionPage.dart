@@ -10,7 +10,7 @@ class DescriptionPage extends StatefulWidget {
   List<DocumentSnapshot> reviews;
   List<int> reviewScores;
   bool isAnime, userHasIt;
-  String status = "Not Initialized";
+  String status = "Not Initialized", profileURL = "Not Initialized";
   int episodes = 0, score = 0, totalScoreEntries = 0, totalScore = 0;
   double meanScore = 0;
   DescriptionPage({@required this.user, @required this.aniManga}) {
@@ -48,6 +48,12 @@ class DescriptionPageState extends State<DescriptionPage> {
     widget.reviews = reviewDocs.documents;
 
     // Gather Data
+    var userDoc = await Firestore.instance
+        .collection('users')
+        .document(widget.user.displayName)
+        .get();
+    widget.profileURL = userDoc.data['profileURL'].toString();
+
     widget.status = await getAniMangaUserValue(widget.user.displayName,
         widget.aniManga.documentID, widget.isAnime, "Status");
     widget.episodes = await getAniMangaUserValueC(
@@ -159,9 +165,6 @@ class DescriptionPageState extends State<DescriptionPage> {
                 },
               ),
             ),
-            /*  Container(
-                width: MediaQuery.of(context).size.width * 0.2,
-                child: */
             DropdownButton(
               hint: Text(widget.status),
               value: null,
@@ -178,7 +181,6 @@ class DescriptionPageState extends State<DescriptionPage> {
                 });
               },
             ),
-            /*  ),*/
             Container(
               width: MediaQuery.of(context).size.width * 0.2,
               child: TextField(
@@ -211,7 +213,7 @@ class DescriptionPageState extends State<DescriptionPage> {
         children: <Widget>[
           Container(
             width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.width * 0.8,
             decoration: BoxDecoration(
               image: DecorationImage(
                 fit: BoxFit.fill,
@@ -355,18 +357,19 @@ class DescriptionPageState extends State<DescriptionPage> {
                   borderRadius: BorderRadius.circular(40.0),
                   child: Container(
                       padding: EdgeInsets.all(20.0),
-                      width: MediaQuery.of(context).size.width,
-                      height: 300,
                       decoration: BoxDecoration(color: Colors.blueGrey.shade50),
                       child: Column(children: <Widget>[
                         ListTile(
+                          leading: Image.network(widget.profileURL,
+                              width: MediaQuery.of(context).size.width * 0.3,
+                              height: MediaQuery.of(context).size.width * 0.3),
                           trailing: Text(
                               "Score: " +
                                   ((widget.reviewScores.isEmpty)
                                       ? '-'
                                       : widget.reviewScores[index].toString()),
                               style: TextStyle(fontWeight: FontWeight.bold)),
-                          leading: Text(reviewDocument.documentID,
+                          title: Text(reviewDocument.documentID,
                               textScaleFactor: 1.2,
                               style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
