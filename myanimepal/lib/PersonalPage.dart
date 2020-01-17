@@ -266,7 +266,7 @@ class PersonalPageState extends State<PersonalPage> {
           canvasColor: Colors.transparent,
         ),
         child: DropdownButton(
-          hint: Text('Change Profile'),
+          hint: Text('Change Profile', style: TextStyle(color: Colors.white),),
           value: null,
           items: (profileURLs).map((String item) {
             return DropdownMenuItem(

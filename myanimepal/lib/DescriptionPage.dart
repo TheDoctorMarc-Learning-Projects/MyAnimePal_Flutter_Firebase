@@ -9,6 +9,7 @@ class DescriptionPage extends StatefulWidget {
   DocumentSnapshot aniManga;
   List<DocumentSnapshot> reviews;
   List<int> reviewScores;
+  List<String> usersProfileURLS;
   bool isAnime, userHasIt;
   String status = "Not Initialized", profileURL = "Not Initialized";
   int episodes = 0, score = 0, totalScoreEntries = 0, totalScore = 0;
@@ -16,6 +17,7 @@ class DescriptionPage extends StatefulWidget {
   DescriptionPage({@required this.user, @required this.aniManga}) {
     reviews = List<DocumentSnapshot>();
     reviewScores = List<int>();
+    usersProfileURLS = List<String>();
     isAnime = isAnimeFromPath(aniManga.reference.path.toString());
   }
 
@@ -46,6 +48,9 @@ class DescriptionPageState extends State<DescriptionPage> {
     var reviewDocs =
         await widget.aniManga.reference.collection('reviews').getDocuments();
     widget.reviews = reviewDocs.documents;
+
+    // ...And profile images!!
+   loadUserProfileURLs(widget.reviews); 
 
     // Gather Data
     var userDoc = await Firestore.instance
@@ -360,7 +365,7 @@ class DescriptionPageState extends State<DescriptionPage> {
                       decoration: BoxDecoration(color: Colors.blueGrey.shade50),
                       child: Column(children: <Widget>[
                         ListTile(
-                          leading: Image.network(widget.profileURL,
+                          leading: Image.network(widget.usersProfileURLS[index],
                               width: MediaQuery.of(context).size.width * 0.3,
                               height: MediaQuery.of(context).size.width * 0.3),
                           trailing: Text(
@@ -467,4 +472,13 @@ class DescriptionPageState extends State<DescriptionPage> {
 
     setState(() {});
   }
+
+  void loadUserProfileURLs(List<DocumentSnapshot> reviews) async {
+    for (int i = 0; i < reviews.length; ++i) 
+    {
+      var userDoc = await Firestore.instance.collection('users').document(reviews[i].documentID).get(); 
+      widget.usersProfileURLS.add(userDoc.data['profileURL'].toString()); 
+    }
+  }
+
 }
