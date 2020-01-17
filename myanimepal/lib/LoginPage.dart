@@ -184,7 +184,7 @@ class SingInState extends State<SingIn> {
         .document(user.displayName)
         .collection('animes')
         .document("empty")
-        .setData({"": "empty"});
+        .setData({"empty": "empty"});
     Firestore.instance
         .collection('users')
         .document(user.displayName)
