@@ -342,32 +342,30 @@ class DescriptionPageState extends State<DescriptionPage> {
   }
 
   reviews() {
-    // TODO: if my review, button to delete it (one user review per aniManga)
-    return Container(
-        width: MediaQuery.of(context).size.width,
-        height: ((20 + 300) * widget.reviews.length)
-            .toDouble(), // meaning-> spacing + review container size
-        child: ListView.builder(
-            itemCount: widget.reviews.length,
-            itemBuilder: (context, index) {
-              var reviewDocument = widget.reviews[index];
-              return Column(
-                children: <Widget>[
-                  SizedBox(height: 20),
-                  Container(
+    return ListView.builder(
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: widget.reviews.length,
+        itemBuilder: (context, index) {
+          var reviewDocument = widget.reviews[index];
+          return Column(
+            children: <Widget>[
+              SizedBox(height: 20),
+              ClipRRect(
+                  borderRadius: BorderRadius.circular(40.0),
+                  child: Container(
                       padding: EdgeInsets.all(20.0),
                       width: MediaQuery.of(context).size.width,
                       height: 300,
                       decoration: BoxDecoration(color: Colors.blueGrey.shade50),
                       child: Column(children: <Widget>[
-                        (reviewDocument.documentID == widget.user.displayName)
-                            ? deleteReviewButton()
-                            : Container(),
                         ListTile(
-                          trailing: Text("Score: " +
-                              ((widget.reviewScores.isEmpty)
-                                  ? '-'
-                                  : widget.reviewScores[index].toString())),
+                          trailing: Text(
+                              "Score: " +
+                                  ((widget.reviewScores.isEmpty)
+                                      ? '-'
+                                      : widget.reviewScores[index].toString()),
+                              style: TextStyle(fontWeight: FontWeight.bold)),
                           leading: Text(reviewDocument.documentID,
                               textScaleFactor: 1.2,
                               style: TextStyle(fontWeight: FontWeight.bold)),
@@ -376,11 +374,15 @@ class DescriptionPageState extends State<DescriptionPage> {
                         Text(
                           reviewDocument.data['Body'],
                           textAlign: TextAlign.start,
-                        )
-                      ]))
-                ],
-              );
-            }));
+                        ),
+                        SizedBox(height: 10),
+                        (reviewDocument.documentID == widget.user.displayName)
+                            ? deleteReviewButton()
+                            : Container()
+                      ])))
+            ],
+          );
+        });
   }
 
   addReviewButton() {
@@ -401,7 +403,12 @@ class DescriptionPageState extends State<DescriptionPage> {
 
   deleteReviewButton() {
     return RaisedButton(
-      child: Text('Delete', textAlign: TextAlign.center),
+      color: Colors.red.shade100,
+      child: Text(
+        'Delete',
+        textAlign: TextAlign.center,
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
       onPressed: () {
         setState(() {
           deleteReview();
