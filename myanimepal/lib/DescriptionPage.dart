@@ -8,12 +8,14 @@ class DescriptionPage extends StatefulWidget {
   FirebaseUser user;
   DocumentSnapshot aniManga;
   List<DocumentSnapshot> reviews;
+  List<int> reviewScores;
   bool isAnime, userHasIt;
   String status = "Not Initialized";
   int episodes = 0, score = 0, totalScoreEntries = 0, totalScore = 0;
   double meanScore = 0;
   DescriptionPage({@required this.user, @required this.aniManga}) {
     reviews = List<DocumentSnapshot>();
+    reviewScores = List<int>();
     isAnime = isAnimeFromPath(aniManga.reference.path.toString());
   }
 
@@ -27,6 +29,7 @@ class DescriptionPageState extends State<DescriptionPage> {
 
   setup() async {
     await setupStatus();
+    await loadUserScores();
     watchedController =
         new TextEditingController(text: widget.episodes.toString());
     scoreController = new TextEditingController(text: widget.score.toString());
@@ -360,9 +363,15 @@ class DescriptionPageState extends State<DescriptionPage> {
                         (reviewDocument.documentID == widget.user.displayName)
                             ? deleteReviewButton()
                             : Container(),
-                        Text(reviewDocument.documentID,
-                            textScaleFactor: 1.2,
-                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        ListTile(
+                          trailing: Text("Score: " +
+                              ((widget.reviewScores.isEmpty)
+                                  ? '-'
+                                  : widget.reviewScores[index].toString())),
+                          leading: Text(reviewDocument.documentID,
+                              textScaleFactor: 1.2,
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                        ),
                         SizedBox(height: 5),
                         Text(
                           reviewDocument.data['Body'],
@@ -431,5 +440,21 @@ class DescriptionPageState extends State<DescriptionPage> {
           .collection('reviews')
           .document(widget.user.displayName));
     });
+  }
+
+  loadUserScores() async // must look at each review and 1) retrieve the user then 2) search for the animanga score
+  {
+    for (int i = 0; i < widget.reviews.length; ++i) {
+      var aniManga = await Firestore.instance
+          .collection('users')
+          .document(widget.reviews[i].documentID)
+          .collection((widget.isAnime) ? 'animes' : 'mangas')
+          .document(widget.aniManga.documentID)
+          .get();
+
+      widget.reviewScores.add(int.parse(aniManga.data["Score"].toString()));
+    }
+
+    setState(() {});
   }
 }

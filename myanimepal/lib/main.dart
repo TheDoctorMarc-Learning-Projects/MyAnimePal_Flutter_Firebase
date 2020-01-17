@@ -39,3 +39,5 @@ class MyAnimePal extends StatelessWidget {
         home: SingIn(animeData: animeData, mangaData: mangaData));
   }
 }
+
+
