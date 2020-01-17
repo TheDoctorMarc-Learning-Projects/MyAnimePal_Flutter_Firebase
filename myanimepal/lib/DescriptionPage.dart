@@ -23,6 +23,7 @@ class DescriptionPage extends StatefulWidget {
 
 class DescriptionPageState extends State<DescriptionPage> {
   TextEditingController watchedController, scoreController;
+  bool addingReview = false;
 
   setup() async {
     await setupStatus();
@@ -240,6 +241,9 @@ class DescriptionPageState extends State<DescriptionPage> {
           ),
           SizedBox(height: 30),
           Text('Reviews', textScaleFactor: 2),
+          SizedBox(height: 10),
+          (addingReview) ? addReviewWorkflow() : addReviewButton(),
+          SizedBox(height: 10),
           reviews(),
         ],
       )),
@@ -334,10 +338,12 @@ class DescriptionPageState extends State<DescriptionPage> {
     await setupStatus();
   }
 
-  reviews() { // TODO: if my review, button to delete it (one user review per aniManga)
+  reviews() {
+    // TODO: if my review, button to delete it (one user review per aniManga)
     return Container(
         width: MediaQuery.of(context).size.width,
-        height: ((20 + 500) * widget.reviews.length).toDouble(), // meaning-> 20 spacing + 200 container 
+        height: ((20 + 300) * widget.reviews.length)
+            .toDouble(), // meaning-> spacing + review container size
         child: ListView.builder(
             itemCount: widget.reviews.length,
             itemBuilder: (context, index) {
@@ -347,7 +353,7 @@ class DescriptionPageState extends State<DescriptionPage> {
                   SizedBox(height: 20),
                   Container(
                       padding: EdgeInsets.all(20.0),
-                      height: 500,
+                      height: 300,
                       decoration: BoxDecoration(color: Colors.blueGrey.shade50),
                       child: Column(children: <Widget>[
                         Text(reviewDocument.documentID,
@@ -362,5 +368,45 @@ class DescriptionPageState extends State<DescriptionPage> {
                 ],
               );
             }));
+  }
+
+  addReviewButton() {
+    return FloatingActionButton(
+      child: Text(
+        'Add Review',
+        textAlign: TextAlign.center,
+        textScaleFactor: 0.8,
+      ),
+      onPressed: () {
+        setState(() {
+          setupStatus();
+          addingReview = true;
+        });
+      },
+    );
+  }
+
+  addReviewWorkflow() {
+    return TextField(
+      onSubmitted: (value) {
+        setState(() {
+          setupStatus();
+          addReview(value);
+          addingReview = false;
+        });
+      },
+    );
+  }
+
+  void addReview(
+      String
+          text) async // TODO: check user does not have a review?? Maybe in the next life ...
+  {
+    await Firestore.instance
+        .collection((widget.isAnime) ? 'animes' : 'mangas')
+        .document(widget.aniManga.documentID)
+        .collection('reviews')
+        .document(widget.user.displayName)
+        .setData({'Body': text});
   }
 }
