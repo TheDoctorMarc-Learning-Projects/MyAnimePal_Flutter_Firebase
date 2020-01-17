@@ -50,7 +50,7 @@ class DescriptionPageState extends State<DescriptionPage> {
     widget.reviews = reviewDocs.documents;
 
     // ...And profile images!!
-   loadUserProfileURLs(widget.reviews); 
+    loadUserProfileURLs(widget.reviews);
 
     // Gather Data
     var userDoc = await Firestore.instance
@@ -164,6 +164,13 @@ class DescriptionPageState extends State<DescriptionPage> {
                 keyboardType: TextInputType.number,
                 onSubmitted: (value) {
                   setState(() {
+                    int maxValue = int.parse((widget.isAnime)
+                        ? widget.aniManga.data["Episodes"].toString()
+                        : widget.aniManga.data["Chapters"].toString());
+                    if (int.parse(value) > maxValue) {
+                      value = maxValue.toString();
+                      watchedController.text = value; 
+                    }
                     setUserValue((widget.isAnime) ? 'Watched' : 'Readed',
                         int.parse(value));
                   });
@@ -197,6 +204,11 @@ class DescriptionPageState extends State<DescriptionPage> {
                 keyboardType: TextInputType.number,
                 onSubmitted: (value) {
                   setState(() {
+                    if(int.parse(value) > 10)
+                    {
+                      value = 10.toString(); 
+                      scoreController.text = value; 
+                    }
                     setScore(int.parse(value));
                   });
                 },
@@ -303,6 +315,10 @@ class DescriptionPageState extends State<DescriptionPage> {
 
   void setScore(int score) async {
     int prevScore = widget.score;
+
+    if (score > 10) {
+      score = 10;
+    }
     await setUserValue("Score", score);
 
     // Compute mean score
@@ -474,11 +490,12 @@ class DescriptionPageState extends State<DescriptionPage> {
   }
 
   void loadUserProfileURLs(List<DocumentSnapshot> reviews) async {
-    for (int i = 0; i < reviews.length; ++i) 
-    {
-      var userDoc = await Firestore.instance.collection('users').document(reviews[i].documentID).get(); 
-      widget.usersProfileURLS.add(userDoc.data['profileURL'].toString()); 
+    for (int i = 0; i < reviews.length; ++i) {
+      var userDoc = await Firestore.instance
+          .collection('users')
+          .document(reviews[i].documentID)
+          .get();
+      widget.usersProfileURLS.add(userDoc.data['profileURL'].toString());
     }
   }
-
 }
