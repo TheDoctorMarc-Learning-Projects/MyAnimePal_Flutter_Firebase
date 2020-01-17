@@ -160,5 +160,5 @@ bool isAnimeFromPath(String fullPath) {
 }
 
 String getScoreString(double score) {
-  return (score > 0) ? score.toString() : "-";
+  return (score > 0) ? score.toStringAsFixed(2) : "-";
 }

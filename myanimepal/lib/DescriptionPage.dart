@@ -77,6 +77,8 @@ class DescriptionPageState extends State<DescriptionPage> {
     var stringVal = await getAniMangaValue(
         widget.aniManga.documentID, widget.isAnime, "Mean Score");
     widget.meanScore = double.parse(stringVal);
+
+    if (!mounted) return;
     setState(() {});
   }
 
@@ -118,6 +120,7 @@ class DescriptionPageState extends State<DescriptionPage> {
             textAlign: TextAlign.center,
           ),
           onPressed: () {
+            if (!mounted) return;
             setState(() {
               addAniMangaToUser();
             });
@@ -138,6 +141,7 @@ class DescriptionPageState extends State<DescriptionPage> {
             textScaleFactor: 0.7,
           ),
           onPressed: () {
+            if (!mounted) return;
             setState(() {
               deleteFromUser();
             });
@@ -163,13 +167,14 @@ class DescriptionPageState extends State<DescriptionPage> {
                     labelText: (widget.isAnime) ? 'Watched' : 'Readed'),
                 keyboardType: TextInputType.number,
                 onSubmitted: (value) {
+                  if (!mounted) return;
                   setState(() {
                     int maxValue = int.parse((widget.isAnime)
                         ? widget.aniManga.data["Episodes"].toString()
                         : widget.aniManga.data["Chapters"].toString());
                     if (int.parse(value) > maxValue) {
                       value = maxValue.toString();
-                    //  watchedController.text = value; 
+                      //  watchedController.text = value;
                     }
                     setUserValue((widget.isAnime) ? 'Watched' : 'Readed',
                         int.parse(value));
@@ -188,6 +193,7 @@ class DescriptionPageState extends State<DescriptionPage> {
                 );
               }).toList(),
               onChanged: (String value) {
+                if (!mounted) return;
                 setState(() {
                   setUserValue("Status", value);
                 });
@@ -203,11 +209,11 @@ class DescriptionPageState extends State<DescriptionPage> {
                         "Score"), // TODO: update this in firebase -> do not accept 0 score, only 1-10 ints
                 keyboardType: TextInputType.number,
                 onSubmitted: (value) {
+                  if (!mounted) return;
                   setState(() {
-                    if(int.parse(value) > 10)
-                    {
-                      value = '10'; 
-                //      scoreController.text = value; 
+                    if (int.parse(value) > 10) {
+                      value = '10';
+                      //      scoreController.text = value;
                     }
                     setScore(int.parse(value));
                   });
@@ -417,6 +423,7 @@ class DescriptionPageState extends State<DescriptionPage> {
         textScaleFactor: 0.8,
       ),
       onPressed: () {
+        if (!mounted) return;
         setState(() {
           setupStatus();
           addingReview = true;
@@ -434,6 +441,7 @@ class DescriptionPageState extends State<DescriptionPage> {
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
       onPressed: () {
+        if (!mounted) return;
         setState(() {
           deleteReview();
           setupStatus();
@@ -486,6 +494,7 @@ class DescriptionPageState extends State<DescriptionPage> {
       widget.reviewScores.add(int.parse(aniManga.data["Score"].toString()));
     }
 
+    if (!mounted) return;
     setState(() {});
   }
 
