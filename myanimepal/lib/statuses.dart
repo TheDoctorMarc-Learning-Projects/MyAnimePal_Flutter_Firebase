@@ -35,6 +35,19 @@ Future<dynamic> getAniMangaValueB(
   return result.data[value];
 }
 
+Future<int> getAniMangaValueC(
+    String aniMangaName, bool anime, String value) async {
+  String collection = (anime) ? "animes" : "mangas";
+  DocumentSnapshot result = await Firestore.instance
+      .collection(collection)
+      .document(aniMangaName)
+      .get();
+  if (result.exists == false) {
+    return 0;
+  }
+  return int.parse(result.data[value].toString());
+}
+
 
 Future<bool> setAniMangaValue(
     String aniMangaName, bool anime, String valueName, dynamic value) async {
@@ -54,6 +67,8 @@ Future<bool> setAniMangaValue(
 }
 
 // ANIMANGAS INSIDE USER NODE
+
+// STRING GETTER
 Future<String> getAniMangaUserValue(
     String userName, String aniMangaName, bool anime, String value) async {
   String collection = (anime) ? "animes" : "mangas";
@@ -69,6 +84,7 @@ Future<String> getAniMangaUserValue(
   return result.data[value].toString();
 }
 
+// DYNAMIC GETTER
 Future<dynamic> getAniMangaUserValueB(
     String userName, String aniMangaName, bool anime, String value) async {
   String collection = (anime) ? "animes" : "mangas";
@@ -84,6 +100,21 @@ Future<dynamic> getAniMangaUserValueB(
   return result.data[value];
 }
 
+// INT GETTER
+Future<int> getAniMangaUserValueC(
+    String userName, String aniMangaName, bool anime, String value) async {
+  String collection = (anime) ? "animes" : "mangas";
+  DocumentSnapshot result = await Firestore.instance
+      .collection("users")
+      .document(userName)
+      .collection(collection)
+      .document(aniMangaName)
+      .get();
+  if (result.exists == false) {
+    return 0;
+  }
+  return int.parse(result.data[value].toString());
+}
 
 Future<bool> setAniMangaUserValue(String userName, String aniMangaName,
     bool anime, String valueName, dynamic value) async {

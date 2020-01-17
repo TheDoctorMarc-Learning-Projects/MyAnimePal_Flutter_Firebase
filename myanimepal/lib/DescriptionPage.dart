@@ -30,30 +30,29 @@ class DescriptionPageState extends State<DescriptionPage> {
   }
 
   setupStatus() async {
-    
     // Reload widget's aniManga!!
-    var docRef = Firestore.instance.collection((widget.isAnime) ? 'animes' : 'mangas').document(widget.aniManga.documentID); 
-    widget.aniManga = await docRef.get(); 
+    var docRef = Firestore.instance
+        .collection((widget.isAnime) ? 'animes' : 'mangas')
+        .document(widget.aniManga.documentID);
+    widget.aniManga = await docRef.get();
 
     widget.status = await getAniMangaUserValue(widget.user.displayName,
         widget.aniManga.documentID, widget.isAnime, "Status");
-    widget.episodes = await getAniMangaUserValueB(
+    widget.episodes = await getAniMangaUserValueC(
         widget.user.displayName,
         widget.aniManga.documentID,
         widget.isAnime,
         (widget.isAnime) ? "Watched" : "Readed");
-    widget.score = await getAniMangaUserValueB(widget.user.displayName,
+    widget.score = await getAniMangaUserValueC(widget.user.displayName,
         widget.aniManga.documentID, widget.isAnime, "Score");
 
-    widget.totalScore = await getAniMangaUserValueB(widget.user.displayName,
+    widget.totalScore = await getAniMangaValueC(
         widget.aniManga.documentID, widget.isAnime, "Total Score");
-    widget.totalScoreEntries = await getAniMangaUserValueB(
-        widget.user.displayName,
-        widget.aniManga.documentID,
-        widget.isAnime,
-        "Total Score Entries");
+    widget.totalScoreEntries = await getAniMangaValueC(
+        widget.aniManga.documentID, widget.isAnime, "Total Score Entries");
 
-    var stringVal = await getAniMangaValue(widget.aniManga.documentID, widget.isAnime, "Mean Score"); 
+    var stringVal = await getAniMangaValue(
+        widget.aniManga.documentID, widget.isAnime, "Mean Score");
     widget.meanScore = double.parse(stringVal);
     setState(() {});
   }
@@ -216,7 +215,7 @@ class DescriptionPageState extends State<DescriptionPage> {
                   textScaleFactor: 1.3),
               Text(
                   "Mean Score: " +
-                      getScoreString(widget.aniManga.data["Mean Score"])
+                      getScoreString(widget.meanScore)
                           .toString(),
                   textScaleFactor: 1.3)
             ],
@@ -318,9 +317,8 @@ class DescriptionPageState extends State<DescriptionPage> {
     await setupStatus();
 
     // Calculate the mean score dividing total score by total score entries
-    double meanScore =
-        (widget.aniManga.data["Total Score"] as num) /
-            (widget.aniManga.data["Total Score Entries"] as num);
+    double meanScore = (widget.aniManga.data["Total Score"] as num) /
+        (widget.aniManga.data["Total Score Entries"] as num);
     await setAniMangaValue(
         widget.aniManga.documentID, widget.isAnime, "Mean Score", meanScore);
 
