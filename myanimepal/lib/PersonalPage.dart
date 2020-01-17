@@ -79,10 +79,11 @@ class PersonalPageState extends State<PersonalPage> {
             ),
           ),
           //searchBar(),
-          SizedBox(height: 10),
-          toggleAniMangaViewButton(),
+         
           SizedBox(height: 20),
           (animes) ? animangaList("animes") : animangaList("mangas"),
+           SizedBox(height: 10),
+          toggleAniMangaViewButton(),
         ],
       ),
     );
@@ -225,9 +226,10 @@ class PersonalPageState extends State<PersonalPage> {
                           Center(
                             child: Text(
                               doc.documentID,
+                              textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 12,
+                                fontSize: 11,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
