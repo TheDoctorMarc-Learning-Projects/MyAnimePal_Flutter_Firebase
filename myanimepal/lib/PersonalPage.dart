@@ -80,10 +80,10 @@ class PersonalPageState extends State<PersonalPage> {
             ),
           ),
           //searchBar(),
-         
+
           SizedBox(height: 20),
           (animes) ? animangaList("animes") : animangaList("mangas"),
-           SizedBox(height: 10),
+          SizedBox(height: 10),
           toggleAniMangaViewButton(),
         ],
       ),
@@ -193,44 +193,29 @@ class PersonalPageState extends State<PersonalPage> {
                     : widget.mangaData[index];
                 Map<String, dynamic> data = doc.data;
                 return (doc.documentID) != 'empty'
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          // SizedBox(height: 40),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                left: 16, right: 16, bottom: 8),
-                            child: InkWell(
-                              child: Container(
-                                width: MediaQuery.of(context).size.width / 2,
-                                height: MediaQuery.of(context).size.height / 4,
-                                decoration: BoxDecoration(
-                                  color: Colors.black54,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20)),
-                                  image: DecorationImage(
-                                    fit: BoxFit.fill,
-                                    image: NetworkImage(data["ImagePath"]),
-                                  ),
-                                ),
-                              ),
-                              onDoubleTap: () {
-                                createDescriptionPage(doc, list);
-                              },
-                            ),
-                          ),
-                          Center(
-                            child: Text(
-                              doc.documentID,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
+                    ?
+                    // SizedBox(height: 40),
+                    Padding(
+                        padding: const EdgeInsets.only(
+                            left: 16, right: 16, bottom: 8),
+                        child: InkWell(
+                          child: Container(
+                            width: MediaQuery.of(context).size.width / 2,
+                            height: MediaQuery.of(context).size.height / 4,
+                            decoration: BoxDecoration(
+                              color: Colors.black54,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
+                              image: DecorationImage(
+                                fit: BoxFit.fill,
+                                image: NetworkImage(data["ImagePath"]),
                               ),
                             ),
                           ),
-                        ],
+                          onDoubleTap: () {
+                            createDescriptionPage(doc, list);
+                          },
+                        ),
                       )
                     : Container(
                         height: 1,
@@ -266,7 +251,10 @@ class PersonalPageState extends State<PersonalPage> {
           canvasColor: Colors.transparent,
         ),
         child: DropdownButton(
-          hint: Text('Change Profile', style: TextStyle(color: Colors.white),),
+          hint: Text(
+            'Change Profile',
+            style: TextStyle(color: Colors.white),
+          ),
           value: null,
           items: (profileURLs).map((String item) {
             return DropdownMenuItem(
