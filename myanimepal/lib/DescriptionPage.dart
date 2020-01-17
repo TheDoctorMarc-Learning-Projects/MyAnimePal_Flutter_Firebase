@@ -7,11 +7,13 @@ import 'statuses.dart';
 class DescriptionPage extends StatefulWidget {
   FirebaseUser user;
   DocumentSnapshot aniManga;
+  List<DocumentSnapshot> reviews;
   bool isAnime, userHasIt;
   String status = "Not Initialized";
   int episodes = 0, score = 0, totalScoreEntries = 0, totalScore = 0;
   double meanScore = 0;
   DescriptionPage({@required this.user, @required this.aniManga}) {
+    reviews = List<DocumentSnapshot>();
     isAnime = isAnimeFromPath(aniManga.reference.path.toString());
   }
 
@@ -36,6 +38,12 @@ class DescriptionPageState extends State<DescriptionPage> {
         .document(widget.aniManga.documentID);
     widget.aniManga = await docRef.get();
 
+    // Also reviews for easy access!!
+    var reviewDocs =
+        await widget.aniManga.reference.collection('reviews').getDocuments();
+    widget.reviews = reviewDocs.documents;
+
+    // Gather Data
     widget.status = await getAniMangaUserValue(widget.user.displayName,
         widget.aniManga.documentID, widget.isAnime, "Status");
     widget.episodes = await getAniMangaUserValueC(
@@ -213,10 +221,7 @@ class DescriptionPageState extends State<DescriptionPage> {
             children: <Widget>[
               Text("Genre: " + widget.aniManga.data["Genre"],
                   textScaleFactor: 1.3),
-              Text(
-                  "Mean Score: " +
-                      getScoreString(widget.meanScore)
-                          .toString(),
+              Text("Mean Score: " + getScoreString(widget.meanScore).toString(),
                   textScaleFactor: 1.3)
             ],
           ),
@@ -233,6 +238,9 @@ class DescriptionPageState extends State<DescriptionPage> {
               // textScaleFactor: 2,
             ),
           ),
+          SizedBox(height: 30),
+          Text('Reviews', textScaleFactor: 2),
+          reviews(),
         ],
       )),
     );
@@ -324,5 +332,35 @@ class DescriptionPageState extends State<DescriptionPage> {
 
     // Refresh data
     await setupStatus();
+  }
+
+  reviews() { // TODO: if my review, button to delete it (one user review per aniManga)
+    return Container(
+        width: MediaQuery.of(context).size.width,
+        height: ((20 + 500) * widget.reviews.length).toDouble(), // meaning-> 20 spacing + 200 container 
+        child: ListView.builder(
+            itemCount: widget.reviews.length,
+            itemBuilder: (context, index) {
+              var reviewDocument = widget.reviews[index];
+              return Column(
+                children: <Widget>[
+                  SizedBox(height: 20),
+                  Container(
+                      padding: EdgeInsets.all(20.0),
+                      height: 500,
+                      decoration: BoxDecoration(color: Colors.blueGrey.shade50),
+                      child: Column(children: <Widget>[
+                        Text(reviewDocument.documentID,
+                            textScaleFactor: 1.2,
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        SizedBox(height: 5),
+                        Text(
+                          reviewDocument.data['Body'],
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        )
+                      ]))
+                ],
+              );
+            }));
   }
 }
