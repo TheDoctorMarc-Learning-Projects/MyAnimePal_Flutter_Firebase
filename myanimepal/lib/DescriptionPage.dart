@@ -169,7 +169,7 @@ class DescriptionPageState extends State<DescriptionPage> {
                         : widget.aniManga.data["Chapters"].toString());
                     if (int.parse(value) > maxValue) {
                       value = maxValue.toString();
-                      watchedController.text = value; 
+                    //  watchedController.text = value; 
                     }
                     setUserValue((widget.isAnime) ? 'Watched' : 'Readed',
                         int.parse(value));
@@ -206,8 +206,8 @@ class DescriptionPageState extends State<DescriptionPage> {
                   setState(() {
                     if(int.parse(value) > 10)
                     {
-                      value = 10.toString(); 
-                      scoreController.text = value; 
+                      value = '10'; 
+                //      scoreController.text = value; 
                     }
                     setScore(int.parse(value));
                   });
@@ -391,7 +391,7 @@ class DescriptionPageState extends State<DescriptionPage> {
                                       : widget.reviewScores[index].toString()),
                               style: TextStyle(fontWeight: FontWeight.bold)),
                           title: Text(reviewDocument.documentID,
-                              textScaleFactor: 1.2,
+                              textScaleFactor: 0.8,
                               style: TextStyle(fontWeight: FontWeight.bold)),
                         ),
                         SizedBox(height: 5),
