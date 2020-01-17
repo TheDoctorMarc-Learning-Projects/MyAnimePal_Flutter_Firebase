@@ -9,7 +9,8 @@ class DescriptionPage extends StatefulWidget {
   DocumentSnapshot aniManga;
   bool isAnime, userHasIt;
   String status = "Not Initialized";
-  int episodes = 0, score = 0;
+  int episodes = 0, score = 0, totalScoreEntries = 0, totalScore = 0;
+  double meanScore = 0;
   DescriptionPage({@required this.user, @required this.aniManga}) {
     isAnime = isAnimeFromPath(aniManga.reference.path.toString());
   }
@@ -29,16 +30,30 @@ class DescriptionPageState extends State<DescriptionPage> {
   }
 
   setupStatus() async {
+    // Reload widget's aniManga!!
+    var docRef = Firestore.instance
+        .collection((widget.isAnime) ? 'animes' : 'mangas')
+        .document(widget.aniManga.documentID);
+    widget.aniManga = await docRef.get();
+
     widget.status = await getAniMangaUserValue(widget.user.displayName,
         widget.aniManga.documentID, widget.isAnime, "Status");
-    widget.episodes = await getAniMangaUserValueB(
+    widget.episodes = await getAniMangaUserValueC(
         widget.user.displayName,
         widget.aniManga.documentID,
         widget.isAnime,
         (widget.isAnime) ? "Watched" : "Readed");
-    widget.score = await getAniMangaUserValueB(widget.user.displayName,
+    widget.score = await getAniMangaUserValueC(widget.user.displayName,
         widget.aniManga.documentID, widget.isAnime, "Score");
 
+    widget.totalScore = await getAniMangaValueC(
+        widget.aniManga.documentID, widget.isAnime, "Total Score");
+    widget.totalScoreEntries = await getAniMangaValueC(
+        widget.aniManga.documentID, widget.isAnime, "Total Score Entries");
+
+    var stringVal = await getAniMangaValue(
+        widget.aniManga.documentID, widget.isAnime, "Mean Score");
+    widget.meanScore = double.parse(stringVal);
     setState(() {});
   }
 
@@ -163,7 +178,7 @@ class DescriptionPageState extends State<DescriptionPage> {
                 keyboardType: TextInputType.number,
                 onSubmitted: (value) {
                   setState(() {
-                    setUserValue("Score", int.parse(value));
+                    setScore(int.parse(value));
                   });
                 },
               ),
@@ -200,7 +215,7 @@ class DescriptionPageState extends State<DescriptionPage> {
                   textScaleFactor: 1.3),
               Text(
                   "Mean Score: " +
-                      getScoreString(widget.aniManga.data["Mean Score"])
+                      getScoreString(widget.meanScore)
                           .toString(),
                   textScaleFactor: 1.3)
             ],
@@ -223,12 +238,13 @@ class DescriptionPageState extends State<DescriptionPage> {
     );
   }
 
-  void setUserValue(String valueName, dynamic value) async {
+  Future<bool> setUserValue(String valueName, dynamic value) async {
     await setAniMangaUserValue(widget.user.displayName,
         widget.aniManga.documentID, widget.isAnime, valueName, value);
 
     // Refresh data
     await setupStatus();
+    return true;
   }
 
   void addAniMangaToUser() async {
@@ -258,6 +274,53 @@ class DescriptionPageState extends State<DescriptionPage> {
           .collection((widget.isAnime) ? 'animes' : 'mangas')
           .document(widget.aniManga.documentID));
     });
+
+    // Refresh data
+    await setupStatus();
+  }
+
+  void setScore(int score) async {
+    int prevScore = widget.score;
+    await setUserValue("Score", score);
+
+    // Compute mean score
+    computeMeanScore(widget.score - prevScore, prevScore != 0);
+  }
+
+  // Diff example: if the score was 4 and now its 8, diff is +4
+  void computeMeanScore(int diff, bool prevScore) async {
+    // If there wasn't a score, add to the score entry count
+    if (prevScore == false) {
+      await setAniMangaValue(
+          widget.aniManga.documentID,
+          widget.isAnime,
+          "Total Score Entries",
+          widget.aniManga.data["Total Score Entries"] + 1);
+    }
+
+    // If there was a score and now its 0, remove to the score entry count
+    if (widget.score == 0 && prevScore == true) {
+      await setAniMangaValue(
+          widget.aniManga.documentID,
+          widget.isAnime,
+          "Total Score Entries",
+          widget.aniManga.data["Total Score Entries"] - 1);
+    }
+
+    // Update the total score
+    int totalScore = widget.aniManga.data["Total Score"];
+    totalScore += diff;
+    await setAniMangaValue(
+        widget.aniManga.documentID, widget.isAnime, "Total Score", totalScore);
+
+    // Refresh data before calculating the mean score!!
+    await setupStatus();
+
+    // Calculate the mean score dividing total score by total score entries
+    double meanScore = (widget.aniManga.data["Total Score"] as num) /
+        (widget.aniManga.data["Total Score Entries"] as num);
+    await setAniMangaValue(
+        widget.aniManga.documentID, widget.isAnime, "Mean Score", meanScore);
 
     // Refresh data
     await setupStatus();
