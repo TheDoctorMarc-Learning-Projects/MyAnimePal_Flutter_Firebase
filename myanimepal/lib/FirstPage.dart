@@ -220,7 +220,7 @@ class FirstPageState extends State<FirstPage> {
                             ),
                           ),
                           Text(
-                            double.parse(data["Mean Score"].toString()).toString(),
+                            getScoreString(data["Mean Score"]),
                             style: TextStyle(
                               fontSize: 18,
                             ),

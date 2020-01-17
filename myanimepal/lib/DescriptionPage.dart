@@ -270,7 +270,7 @@ class DescriptionPageState extends State<DescriptionPage> {
           SizedBox(height: 30),
           Text('Reviews', textScaleFactor: 2),
           SizedBox(height: 10),
-          (addingReview) ? addReviewWorkflow() : addReviewButton(),
+          ((widget.status == 'Not Found') ? Container() : ((addingReview) ? addReviewWorkflow() : addReviewButton())),
           SizedBox(height: 10),
           reviews(),
         ],
@@ -442,10 +442,7 @@ class DescriptionPageState extends State<DescriptionPage> {
       ),
       onPressed: () {
         if (!mounted) return;
-        setState(() {
           deleteReview();
-          setupStatus();
-        });
       },
     );
   }
@@ -453,11 +450,9 @@ class DescriptionPageState extends State<DescriptionPage> {
   addReviewWorkflow() {
     return TextField(
       onSubmitted: (value) {
-        setState(() {
-          setupStatus();
+        if (!mounted) return;
           addReview(value);
           addingReview = false;
-        });
       },
     );
   }
@@ -469,6 +464,8 @@ class DescriptionPageState extends State<DescriptionPage> {
         .collection('reviews')
         .document(widget.user.displayName)
         .setData({'Body': text});
+
+    setupStatus();
   }
 
   void deleteReview() async {
@@ -479,6 +476,8 @@ class DescriptionPageState extends State<DescriptionPage> {
           .collection('reviews')
           .document(widget.user.displayName));
     });
+
+    setupStatus();
   }
 
   loadUserScores() async // must look at each review and 1) retrieve the user then 2) search for the animanga score
@@ -499,6 +498,7 @@ class DescriptionPageState extends State<DescriptionPage> {
   }
 
   void loadUserProfileURLs(List<DocumentSnapshot> reviews) async {
+    widget.usersProfileURLS.clear(); 
     for (int i = 0; i < reviews.length; ++i) {
       var userDoc = await Firestore.instance
           .collection('users')
@@ -507,4 +507,5 @@ class DescriptionPageState extends State<DescriptionPage> {
       widget.usersProfileURLS.add(userDoc.data['profileURL'].toString());
     }
   }
+
 }
